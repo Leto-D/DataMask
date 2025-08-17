@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "GRID Test",
+  "version": "1.0.0",
+  "description": "Test simple de GRID",
+  "action": {
+    "default_popup": "dist/src/popup/index.html",
+    "default_title": "GRID"
+  }
+}
