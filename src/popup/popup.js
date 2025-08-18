@@ -449,7 +449,7 @@ function copyPrompt() {
   navigator.clipboard.writeText(prompt).then(() => {
     const btn = document.getElementById('copy-btn');
     const original = btn.textContent;
-    btn.textContent = '✅ Copié !';
+    btn.textContent = 'Copié !';
     btn.style.background = '#10b981';
     setTimeout(() => {
       btn.textContent = original;
@@ -620,7 +620,7 @@ function showPreviewModal(title, prompt) {
     navigator.clipboard.writeText(prompt).then(function() {
       var btn = modal.querySelector('[data-action="copy-preview"]');
       var original = btn.textContent;
-      btn.textContent = '✅ Copié !';
+      btn.textContent = 'Copié !';
       setTimeout(function() {
         btn.textContent = original;
       }, 2000);
@@ -757,6 +757,18 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // === MISE À JOUR DYNAMIQUE DU COMPTEUR DE TEMPLATES ===
+  function updateTemplateCount() {
+    const templateCountBadge = document.getElementById('template-count-badge');
+    if (templateCountBadge && promptExamples) {
+      const count = promptExamples.length;
+      templateCountBadge.textContent = `${count} TEMPLATE${count > 1 ? 'S' : ''}`;
+    }
+  }
+
+  // Appeler la fonction pour mettre à jour le compteur
+  updateTemplateCount();
   
   console.log('GRID extension initialized successfully');
 });
