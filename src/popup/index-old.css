@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* === VARIABLES CSS MODERNES === */
+:root {
+  /* Palette de couleurs moderne - Design System */
+  --color-background: #F8F9FA;          /* Fond principal : gris ultra-clair */
+  --color-text-primary: #212529;        /* Texte primaire : gris anthracite */
+  --color-text-secondary: #6C757D;      /* Texte secondaire : gris neutre */
+  --color-accent: #FFC107;              /* Accents jaune : jaune solaire */
+  --color-accent-light: #FFD54F;        /* Jaune doux */
+  --color-accent-dark: #FFB300;         /* Jaune foncé hover */
+  --color-border: #E9ECEF;              /* Bordures : gris très clair */
+  --color-surface: #FFFFFF;             /* Surface des cartes : blanc */
+  --color-surface-dark: #212529;        /* Surface sombre pour bibliothèque */
+  --color-surface-dark-alt: #343A40;    /* Surface sombre alternative */
+  --color-border-dark: #495057;         /* Bordures sombres */
+  --color-text-dark: #FFFFFF;           /* Texte sur fond sombre */
+  --color-text-dark-secondary: #6C757D; /* Texte secondaire sur fond sombre */
+  
+  /* Ombres subtiles */
+  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Géométrie moderne */
+  --radius-sm: 6px;                     /* Inputs */
+  --radius-md: 8px;                     /* Boutons */
+  --radius-lg: 12px;                    /* Cartes */
+  
+  /* Transitions fluides */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+/* === BASE STYLES === */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+}
+
+/* === LAYOUT === */
+#root {
+  width: 400px;
+  height: 600px;
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background);
+}
+
+/* === TYPOGRAPHY === */
+h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.025em;
+  text-align: center;
+}
+
+h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0 0 8px 0;
+}
+
+p {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.text-sm {
+  font-size: 14px;
+}
+
+.text-xs {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+/* === HEADER MODERNE === */
+.header {
+  background: var(--color-surface);
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.header h1 {
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+.header .text-sm {
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* === NAVIGATION MODERNE === */
+.nav-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.nav-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-text-primary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-btn:hover {
+  background: var(--color-text-secondary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+.nav-btn:disabled {
+  background: var(--color-border);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.nav-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.nav-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: white;
+  transition: transform var(--transition-fast);
+}
+
+.nav-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.nav-btn.validate {
+  background: var(--color-accent);
+}
+
+.nav-btn.validate:hover {
+  background: var(--color-accent-dark);
+}
+
+.nav-btn.validate svg {
+  fill: var(--color-text-primary);
+}
+
+/* === PROGRESS BAR === */
+.progress-bar {
+  background: var(--color-border);
+  border-radius: 8px;
+  height: 4px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-dark));
+  height: 100%;
+  transition: width var(--transition-normal);
+  border-radius: 8px;
+}
+
+/* === CONTENT === */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  scroll-behavior: smooth;
+}
+
+.content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+.content-full {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  scroll-behavior: smooth;
+  padding-bottom: 24px;
+}
