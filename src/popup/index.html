@@ -5,17 +5,459 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GRID - AI Prompt Builder</title>
   <style>
+    * { box-sizing: border-box; }
+    
     body {
       width: 400px;
       height: 600px;
       margin: 0;
       padding: 0;
       overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    
+    .app {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* === HEADER === */
+    .header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      color: #0f172a;
+    }
+    
+    .progress-bar {
+      background: #e2e8f0;
+      border-radius: 6px;
+      height: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    
+    .progress-fill {
+      background: linear-gradient(90deg, #0ea5e9, #0284c7);
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: 6px;
+    }
+    
+    /* === MAIN CONTENT === */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .step-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    /* === CARDS === */
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .card:hover {
+      border-color: #0ea5e9;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+      transform: translateY(-1px);
+    }
+    
+    .card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card p {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.4;
+    }
+    
+    /* === FORM ELEMENTS === */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+    
+    .form-textarea {
+      resize: vertical;
+      min-height: 60px;
+      font-family: inherit;
+    }
+    
+    /* === BUTTONS === */
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      padding: 16px 20px;
+      border-top: 1px solid #e2e8f0;
+      background: white;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #d1d5db;
+      background: white;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white;
+      border: none;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* === UTILITY CLASSES === */
+    .hidden { display: none !important; }
+    .text-sm { font-size: 13px; }
+    .text-muted { color: #64748b; }
+    .mb-2 { margin-bottom: 8px; }
+    .mb-4 { margin-bottom: 16px; }
+    
+    /* === SUGGESTIONS === */
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    
+    .suggestion-tag {
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+    
+    .suggestion-tag:hover {
+      background: #e0f2fe;
+      border-color: #0ea5e9;
     }
   </style>
 </head>
 <body>
-  <div id="root"></div>
-  <script type="module" src="./main.tsx"></script>
+  <div id="root" class="app">
+    <!-- HOME VIEW -->
+    <div id="home-view">
+      <div class="header">
+        <h1>🎯 GRID</h1>
+      </div>
+      <div class="content">
+        <div class="card" data-action="start-builder">
+          <h3>🚀 Nouveau Prompt</h3>
+          <p>Créer un prompt guidé en 3 étapes</p>
+        </div>
+        <div class="card" data-action="show-library">
+          <h3>📚 Bibliothèque</h3>
+          <p>Templates et historique</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1: OBJECTIF -->
+    <div id="step1-view" class="hidden">
+      <div class="header">
+        <div>
+          <h1>Étape 1: Définir l'objectif</h1>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 33%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="form-group">
+          <label class="form-label">Objectif principal</label>
+          <textarea id="objectif" class="form-input form-textarea" placeholder="Décrivez précisément ce que vous attendez de l'IA..."></textarea>
+          <div class="suggestions">
+            <span class="suggestion-tag" data-suggestion="objectif">Rédiger un rapport</span>
+            <span class="suggestion-tag" data-suggestion="objectif">Analyser des données</span>
+            <span class="suggestion-tag" data-suggestion="objectif">Créer une stratégie</span>
+            <span class="suggestion-tag" data-suggestion="objectif">Résoudre un problème</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Audience cible</label>
+          <select id="audience" class="form-input" multiple>
+            <option value="débutant">Débutant</option>
+            <option value="intermédiaire">Intermédiaire</option>
+            <option value="expert">Expert</option>
+            <option value="équipe-direction">Équipe de direction</option>
+            <option value="grand-public">Grand public</option>
+            <option value="technique">Public technique</option>
+          </select>
+          <p class="text-sm text-muted">Maintenez Ctrl/Cmd pour sélectionner plusieurs options</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Contexte</label>
+          <textarea id="contexte" class="form-input form-textarea" placeholder="Ex: Entreprise: LeadGenPro, Secteur: Logiciels B2B, Public: investisseurs..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Instructions séquentielles (optionnel)</label>
+          <textarea id="instructions" class="form-input form-textarea" placeholder="1. Effectuer une analyse...\n2. Proposer des stratégies...\n3. Identifier les KPIs..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Critères de succès</label>
+          <textarea id="criteres" class="form-input form-textarea" placeholder="Ex: Réponse complète, cohérente, utilisable, avec 3-5 points par section..."></textarea>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn" data-action="go-home">← Accueil</button>
+        <button class="btn btn-primary" data-action="go-step2" style="margin-left: auto;">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: STRUCTURE -->
+    <div id="step2-view" class="hidden">
+      <div class="header">
+        <div>
+          <h1>Étape 2: Structurer</h1>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 66%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="form-group">
+          <label class="form-label">Rôle et personnalité</label>
+          <select id="role" class="form-input">
+            <option value="">Choisir un rôle...</option>
+            <option value="consultant-senior">Consultant Senior en Stratégie</option>
+            <option value="analyste-données">Analyste de Données</option>
+            <option value="expert-marketing">Expert Marketing</option>
+            <option value="développeur-senior">Développeur Senior</option>
+            <option value="rédacteur-technique">Rédacteur Technique</option>
+            <option value="personnalisé">Rôle personnalisé...</option>
+          </select>
+          <input id="role-custom" class="form-input hidden" placeholder="Décrivez le rôle personnalisé..." style="margin-top: 8px;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Compétences clés</label>
+          <input id="competences" class="form-input" placeholder="Ex: Analyse stratégique, Optimisation, Leadership...">
+          <div class="suggestions">
+            <span class="suggestion-tag" data-suggestion="competence">Analyse stratégique</span>
+            <span class="suggestion-tag" data-suggestion="competence">Pensée critique</span>
+            <span class="suggestion-tag" data-suggestion="competence">Communication</span>
+            <span class="suggestion-tag" data-suggestion="competence">Créativité</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Exemples Input/Output (multishot)</label>
+          <textarea id="exemples" class="form-input form-textarea" style="min-height: 100px;" placeholder="Exemple 1:
+Input: Analyser les forces internes
+Output: Une force pourrait être une équipe commerciale expérimentée
+
+Exemple 2:
+Input: Identifier une opportunité
+Output: Croissance du marché SaaS dans la santé"></textarea>
+          <p class="text-sm text-muted">Fournissez 2-5 exemples avec format Input → Output</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Préremplissage de la réponse (optionnel)</label>
+          <input id="prefill" class="form-input" placeholder='Ex: {"Strengths": [, "Weaknesses": ['>
+          <p class="text-sm text-muted">Format de sortie que l'IA doit commencer à remplir</p>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn" data-action="go-step1">← Précédent</button>
+        <button class="btn btn-primary" data-action="go-step3" style="margin-left: auto;">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: PERSONALISER -->
+    <div id="step3-view" class="hidden">
+      <div class="header">
+        <div>
+          <h1>Étape 3: Personnaliser</h1>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="form-group">
+          <label class="form-label">Longueur de réponse</label>
+          <select id="longueur" class="form-input">
+            <option value="courte">Courte (100-300 mots)</option>
+            <option value="moyenne" selected>Moyenne (300-600 mots)</option>
+            <option value="détaillée">Détaillée (600+ mots)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Niveau de créativité</label>
+          <select id="creativite" class="form-input">
+            <option value="factuelle">Factuelle (0% créativité)</option>
+            <option value="modérée" selected>Modérée (30% créativité)</option>
+            <option value="créative">Créative (70% créativité)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Format de sortie</label>
+          <select id="format" class="form-input">
+            <option value="texte">Texte libre</option>
+            <option value="rapport" selected>Rapport structuré</option>
+            <option value="liste">Liste à puces</option>
+            <option value="json">Format JSON</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Raisonnement (Chain-of-thought)</label>
+          <select id="reasoning" class="form-input">
+            <option value="none">Aucun raisonnement spécifique</option>
+            <option value="step-by-step">Raisonnement étape par étape</option>
+            <option value="justification">Justifier les choix</option>
+            <option value="auto-reflexion">Auto-réflexion avant réponse</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Paramètres GPT avancés</label>
+          <div style="margin: 8px 0;">
+            <label class="form-label text-sm">Autonomie (Eagerness)</label>
+            <select id="eagerness" class="form-input">
+              <option value="low">Basse - L'IA pose des questions</option>
+              <option value="medium" selected>Moyenne - Équilibrée</option>
+              <option value="high">Haute - L'IA est proactive</option>
+            </select>
+          </div>
+          <div style="margin: 8px 0;">
+            <label class="form-label text-sm">Profondeur d'analyse</label>
+            <select id="reasoning-effort" class="form-input">
+              <option value="low">Analyse rapide</option>
+              <option value="medium" selected>Analyse standard</option>
+              <option value="high">Analyse approfondie</option>
+            </select>
+          </div>
+          <div style="margin: 8px 0;">
+            <label class="form-label text-sm">Verbosité</label>
+            <select id="verbosity" class="form-input">
+              <option value="concise">Concise</option>
+              <option value="balanced" selected>Équilibrée</option>
+              <option value="detailed">Détaillée</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Options avancées</label>
+          <label style="display: flex; align-items: center; gap: 8px; margin: 8px 0;">
+            <input type="checkbox" id="allow-unknown"> Autoriser "Je ne sais pas"
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; margin: 8px 0;">
+            <input type="checkbox" id="require-sources"> Exiger des sources
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; margin: 8px 0;">
+            <input type="checkbox" id="use-xml"> Utiliser structure XML avancée
+          </label>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn" data-action="go-step2">← Précédent</button>
+        <button class="btn btn-primary" data-action="generate-prompt" style="margin-left: auto;">Générer Prompt</button>
+      </div>
+    </div>
+
+    <!-- RESULT VIEW -->
+    <div id="result-view" class="hidden">
+      <div class="header">
+        <h1>✨ Prompt généré</h1>
+      </div>
+      <div class="content">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+          <pre id="generated-prompt" style="font-size: 12px; white-space: pre-wrap; margin: 0; font-family: 'Monaco', 'Courier New', monospace;"></pre>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn" data-action="go-step3">← Modifier</button>
+        <button class="btn btn-primary" data-action="copy-prompt" id="copy-btn">📋 Copier</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./popup.js"></script>
 </body>
 </html>

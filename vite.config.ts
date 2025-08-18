@@ -9,21 +9,27 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
+  base: './',
   build: {
     outDir: 'dist',
+    emptyOutDir: true,
     rollupOptions: {
       input: {
-        'popup/index': resolve(__dirname, 'src/popup/index.html'),
-        'background/service-worker': resolve(__dirname, 'src/background/service-worker.ts'),
-        'content/content-script': resolve(__dirname, 'src/content/content-script.ts'),
+        popup: resolve(__dirname, 'src/popup/index.html'),
+        popupjs: resolve(__dirname, 'src/popup/popup.js'),
+        background: resolve(__dirname, 'src/background/service-worker.ts'),
+        content: resolve(__dirname, 'src/content/content-script.ts'),
       },
       output: {
         entryFileNames: (chunkInfo) => {
-          if (chunkInfo.name === 'background/service-worker') {
+          if (chunkInfo.name === 'background') {
             return 'background/service-worker.js'
           }
-          if (chunkInfo.name === 'content/content-script') {
+          if (chunkInfo.name === 'content') {
             return 'content/content-script.js'
+          }
+          if (chunkInfo.name === 'popupjs') {
+            return 'src/popup/popup.js'
           }
           return 'assets/[name].[hash].js'
         },
