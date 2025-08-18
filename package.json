@@ -2,37 +2,11 @@
   "name": "grid-extension",
   "version": "1.0.0",
   "description": "GRID - Extension Chrome d'aide à la création de prompts pour LLM",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "lint:fix": "eslint . --ext ts,tsx --fix",
-    "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "framer-motion": "^11.0.0",
-    "lucide-react": "^0.400.0"
+    "build": "vite build && copy manifest.json dist\\",
+    "dev": "vite"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.258",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "@vitejs/plugin-react": "^4.2.0",
-    "autoprefixer": "^10.4.16",
-    "eslint": "^8.56.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "postcss": "^8.4.32",
-    "prettier": "^3.3.0",
-    "tailwindcss": "^3.4.0",
-    "typescript": "^5.9.0",
-    "vite": "^7.0.0",
-    "vitest": "^1.0.0"
+    "vite": "^7.0.0"
   }
 }

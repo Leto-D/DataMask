@@ -5,208 +5,369 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GRID - AI Prompt Builder</title>
   <style>
-    * { box-sizing: border-box; }
-    
+    /* === VARIABLES CSS MODERNES === */
+    :root {
+      --color-accent: #3b82f6;
+      --color-accent-light: #dbeafe;
+      --color-accent-dark: #1e40af;
+      --color-text-primary: #0f172a;
+      --color-text-secondary: #475569;
+      --color-text-muted: #94a3b8;
+      --color-background: #ffffff;
+      --color-surface: #f8fafc;
+      --color-border: #e2e8f0;
+      --color-border-light: #f1f5f9;
+      --color-success: #10b981;
+      --color-success-light: #d1fae5;
+      
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 250ms ease;
+    }
+
+    /* === APP STRUCTURE === */
     body {
       width: 400px;
       height: 600px;
       margin: 0;
       padding: 0;
       overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: #f8fafc;
-      color: #1e293b;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+      font-size: 14px;
+      line-height: 1.5;
     }
     
     .app {
       height: 100vh;
       display: flex;
       flex-direction: column;
+      background: var(--color-background);
     }
     
-    /* === HEADER === */
+    /* === HEADER MODERNE === */
     .header {
-      background: white;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 16px 20px;
+      background: var(--color-background);
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--color-border-light);
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: flex-start;
+    }
+    
+    .header-content {
+      flex: 1;
     }
     
     .header h1 {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
-      margin: 0;
-      color: #0f172a;
+      margin: 0 0 12px 0;
+      color: var(--color-text-primary);
+      letter-spacing: -0.025em;
+    }
+    
+    /* === NAVIGATION CIRCULAIRE === */
+    .nav-buttons {
+      display: flex;
+      gap: 8px;
+      margin-left: 16px;
+    }
+    
+    .nav-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--color-text-primary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .nav-btn:hover {
+      background: var(--color-text-secondary);
+      transform: scale(1.1);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .nav-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .nav-btn:disabled {
+      background: var(--color-border);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .nav-btn:disabled:hover {
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* === ICÔNES SVG === */
+    .nav-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: white;
+      transition: transform var(--transition-fast);
+    }
+    
+    .nav-btn:hover svg {
+      transform: scale(1.1);
+    }
+    
+    .nav-btn.validate {
+      background: var(--color-success);
+    }
+    
+    .nav-btn.validate:hover {
+      background: #059669;
     }
     
     .progress-bar {
-      background: #e2e8f0;
-      border-radius: 6px;
-      height: 4px;
+      background: var(--color-border-light);
+      border-radius: 8px;
+      height: 3px;
       overflow: hidden;
-      margin-top: 8px;
     }
     
     .progress-fill {
-      background: linear-gradient(90deg, #0ea5e9, #0284c7);
+      background: linear-gradient(90deg, var(--color-accent), var(--color-accent-dark));
       height: 100%;
-      transition: width 0.3s ease;
-      border-radius: 6px;
+      transition: width var(--transition-normal);
+      border-radius: 8px;
     }
     
-    /* === MAIN CONTENT === */
+    /* === CONTENT === */
     .content {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: 24px;
+      scroll-behavior: smooth;
     }
     
-    .step-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #0f172a;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .content::-webkit-scrollbar {
+      width: 4px;
     }
     
-    /* === CARDS === */
+    .content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .content::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: 2px;
+    }
+    
+    /* === CARDS BORDERLESS === */
     .card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      background: var(--color-background);
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: transparent;
+      transition: background var(--transition-fast);
     }
     
     .card:hover {
-      border-color: #0ea5e9;
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
-      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .card:hover::before {
+      background: var(--color-accent);
     }
     
     .card h3 {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
-      margin: 0 0 8px 0;
-      color: #0f172a;
+      margin: 0 0 6px 0;
+      color: var(--color-text-primary);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
     
     .card p {
       font-size: 13px;
-      color: #64748b;
+      color: var(--color-text-secondary);
       margin: 0;
       line-height: 1.4;
     }
     
-    /* === FORM ELEMENTS === */
+    /* === FORM ELEMENTS MODERNES === */
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     
     .form-label {
       display: block;
       font-size: 13px;
       font-weight: 500;
-      color: #374151;
-      margin-bottom: 6px;
+      color: var(--color-text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
     }
     
-    .form-input {
+    .form-input, .form-textarea {
       width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
+      padding: 12px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
       font-size: 14px;
-      transition: border-color 0.2s;
+      font-family: inherit;
+      background: var(--color-background);
+      color: var(--color-text-primary);
+      transition: all var(--transition-fast);
     }
     
-    .form-input:focus {
+    .form-input:focus, .form-textarea:focus {
       outline: none;
-      border-color: #0ea5e9;
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px var(--color-accent-light);
+    }
+    
+    .form-input:hover, .form-textarea:hover {
+      border-color: var(--color-accent);
     }
     
     .form-textarea {
       resize: vertical;
-      min-height: 60px;
-      font-family: inherit;
+      min-height: 80px;
+      line-height: 1.5;
     }
     
-    /* === BUTTONS === */
-    .btn-group {
+    select.form-input {
+      cursor: pointer;
+    }
+    
+    /* === CONTENT SANS BOUTONS BAS === */
+    .content-full {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      scroll-behavior: smooth;
+      padding-bottom: 24px;
+    }
+    
+    /* === SUGGESTIONS MODERNES === */
+    .suggestions {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
-      padding: 16px 20px;
-      border-top: 1px solid #e2e8f0;
-      background: white;
+      margin-top: 12px;
     }
     
-    .btn {
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 14px;
+    .suggestion-tag {
+      background: var(--color-accent-light);
+      color: var(--color-accent-dark);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid #d1d5db;
-      background: white;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      color: white;
       border: none;
+      transition: all var(--transition-fast);
+      letter-spacing: -0.01em;
     }
     
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+    .suggestion-tag:hover {
+      background: var(--color-accent);
+      color: white;
+      transform: scale(1.05);
     }
     
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    /* === CHECKBOXES MODERNES === */
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--color-border);
+      border-radius: 4px;
+      background: var(--color-background);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    input[type="checkbox"]:checked {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+    
+    /* === RESULT VIEW === */
+    pre {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-size: 12px;
+      line-height: 1.4;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      margin: 0;
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;
     }
     
     /* === UTILITY CLASSES === */
     .hidden { display: none !important; }
     .text-sm { font-size: 13px; }
-    .text-muted { color: #64748b; }
+    .text-muted { color: var(--color-text-muted); }
     .mb-2 { margin-bottom: 8px; }
     .mb-4 { margin-bottom: 16px; }
     
-    /* === SUGGESTIONS === */
-    .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
+    /* === MICRO-ANIMATIONS === */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
-    .suggestion-tag {
-      background: #f1f5f9;
-      color: #0f172a;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      cursor: pointer;
-      border: 1px solid #e2e8f0;
-      transition: all 0.2s;
+    .form-group {
+      animation: fadeInUp var(--transition-normal) ease-out;
     }
     
-    .suggestion-tag:hover {
-      background: #e0f2fe;
-      border-color: #0ea5e9;
+    /* === RESPONSIVE TOUCHES === */
+    @media (max-height: 600px) {
+      .content {
+        padding: 16px;
+      }
+      
+      .form-group {
+        margin-bottom: 16px;
+      }
     }
   </style>
 </head>
@@ -215,7 +376,9 @@
     <!-- HOME VIEW -->
     <div id="home-view">
       <div class="header">
-        <h1>🎯 GRID</h1>
+        <div class="header-content">
+          <h1>🎯 GRID</h1>
+        </div>
       </div>
       <div class="content">
         <div class="card" data-action="start-builder">
@@ -232,14 +395,26 @@
     <!-- STEP 1: OBJECTIF -->
     <div id="step1-view" class="hidden">
       <div class="header">
-        <div>
+        <div class="header-content">
           <h1>Étape 1: Définir l'objectif</h1>
           <div class="progress-bar">
             <div class="progress-fill" style="width: 33%"></div>
           </div>
         </div>
+        <div class="nav-buttons">
+          <button class="nav-btn" data-action="go-home" title="Retour à l'accueil">
+            <svg viewBox="0 0 24 24">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+          <button class="nav-btn" data-action="go-step2" title="Étape suivante">
+            <svg viewBox="0 0 24 24">
+              <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="content">
+      <div class="content content-full">
         <div class="form-group">
           <label class="form-label">Objectif principal</label>
           <textarea id="objectif" class="form-input form-textarea" placeholder="Décrivez précisément ce que vous attendez de l'IA..."></textarea>
@@ -279,23 +454,31 @@
           <textarea id="criteres" class="form-input form-textarea" placeholder="Ex: Réponse complète, cohérente, utilisable, avec 3-5 points par section..."></textarea>
         </div>
       </div>
-      <div class="btn-group">
-        <button class="btn" data-action="go-home">← Accueil</button>
-        <button class="btn btn-primary" data-action="go-step2" style="margin-left: auto;">Suivant →</button>
-      </div>
     </div>
 
     <!-- STEP 2: STRUCTURE -->
     <div id="step2-view" class="hidden">
       <div class="header">
-        <div>
+        <div class="header-content">
           <h1>Étape 2: Structurer</h1>
           <div class="progress-bar">
             <div class="progress-fill" style="width: 66%"></div>
           </div>
         </div>
+        <div class="nav-buttons">
+          <button class="nav-btn" data-action="go-step1" title="Étape précédente">
+            <svg viewBox="0 0 24 24">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+          <button class="nav-btn" data-action="go-step3" title="Étape suivante">
+            <svg viewBox="0 0 24 24">
+              <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="content">
+      <div class="content content-full">
         <div class="form-group">
           <label class="form-label">Rôle et personnalité</label>
           <select id="role" class="form-input">
@@ -339,23 +522,31 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
           <p class="text-sm text-muted">Format de sortie que l'IA doit commencer à remplir</p>
         </div>
       </div>
-      <div class="btn-group">
-        <button class="btn" data-action="go-step1">← Précédent</button>
-        <button class="btn btn-primary" data-action="go-step3" style="margin-left: auto;">Suivant →</button>
-      </div>
     </div>
 
     <!-- STEP 3: PERSONALISER -->
     <div id="step3-view" class="hidden">
       <div class="header">
-        <div>
+        <div class="header-content">
           <h1>Étape 3: Personnaliser</h1>
           <div class="progress-bar">
             <div class="progress-fill" style="width: 100%"></div>
           </div>
         </div>
+        <div class="nav-buttons">
+          <button class="nav-btn" data-action="go-step2" title="Étape précédente">
+            <svg viewBox="0 0 24 24">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+          <button class="nav-btn validate" data-action="generate-prompt" title="Générer le prompt">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="content">
+      <div class="content content-full">
         <div class="form-group">
           <label class="form-label">Longueur de réponse</label>
           <select id="longueur" class="form-input">
@@ -435,25 +626,31 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
           </label>
         </div>
       </div>
-      <div class="btn-group">
-        <button class="btn" data-action="go-step2">← Précédent</button>
-        <button class="btn btn-primary" data-action="generate-prompt" style="margin-left: auto;">Générer Prompt</button>
-      </div>
     </div>
 
     <!-- RESULT VIEW -->
     <div id="result-view" class="hidden">
       <div class="header">
-        <h1>✨ Prompt généré</h1>
-      </div>
-      <div class="content">
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
-          <pre id="generated-prompt" style="font-size: 12px; white-space: pre-wrap; margin: 0; font-family: 'Monaco', 'Courier New', monospace;"></pre>
+        <div class="header-content">
+          <h1>✨ Prompt généré</h1>
+        </div>
+        <div class="nav-buttons">
+          <button class="nav-btn" data-action="go-step3" title="Modifier le prompt">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+          </button>
+          <button class="nav-btn validate" data-action="copy-prompt" id="copy-btn" title="Copier le prompt">
+            <svg viewBox="0 0 24 24">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>
+          </button>
         </div>
       </div>
-      <div class="btn-group">
-        <button class="btn" data-action="go-step3">← Modifier</button>
-        <button class="btn btn-primary" data-action="copy-prompt" id="copy-btn">📋 Copier</button>
+      <div class="content content-full">
+        <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
+          <pre id="generated-prompt" style="font-size: 12px; white-space: pre-wrap; margin: 0; font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;"></pre>
+        </div>
       </div>
     </div>
   </div>
