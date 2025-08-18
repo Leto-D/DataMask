@@ -4,14 +4,14 @@
 
 GRID est une extension Chrome moderne qui guide les utilisateurs dans la création de prompts structurés et efficaces pour les IA comme ChatGPT, Claude, etc.
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
-### 🎯 Interface guidée en 3 étapes
+### Interface guidée en 3 étapes
 - **Étape 1** : Définir l'objectif (titre, description, audience cible)
 - **Étape 2** : Structurer le prompt (rôle, compétences, exemples)
 - **Étape 3** : Personnaliser (format de sortie, longueur, créativité)
 
-### 📚 Bibliothèque de templates
+### Bibliothèque de templates
 - Templates prédéfinis par catégorie (business, technique, créatif)
 - Sauvegarde de prompts personnalisés
 - Système de notation et d'utilisation
@@ -105,4 +105,4 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ---
 
-**GRID** - *Transformez vos idées en prompts parfaits* ✨
+**GRID** - *Transformez vos idées en prompts parfaits*
