@@ -336,6 +336,197 @@
       font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;
     }
     
+    /* === LIBRARY STYLES === */
+    .library-header {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+    
+    .library-search {
+      margin-bottom: 12px;
+    }
+    
+    .library-filters {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .library-examples {
+      display: grid;
+      gap: 16px;
+    }
+    
+    .example-card {
+      background: var(--color-background);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      transition: all var(--transition-normal);
+      cursor: pointer;
+    }
+    
+    .example-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: var(--color-accent);
+    }
+    
+    .example-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: var(--color-text-primary);
+    }
+    
+    .example-description {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin: 0 0 12px 0;
+      line-height: 1.4;
+    }
+    
+    .example-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    
+    .tag {
+      background: var(--color-accent-light);
+      color: var(--color-accent-dark);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .example-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    
+    .btn-primary, .btn-secondary {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: none;
+    }
+    
+    .btn-primary {
+      background: var(--color-accent);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--color-accent-dark);
+    }
+    
+    .btn-secondary {
+      background: var(--color-surface);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--color-border-light);
+    }
+    
+    /* === MODAL STYLES === */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    
+    .modal-content {
+      background: var(--color-background);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 600px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .modal-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--color-border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all var(--transition-fast);
+    }
+    
+    .modal-close:hover {
+      background: var(--color-surface);
+      color: var(--color-text-secondary);
+    }
+    
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+    
+    .prompt-preview {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      margin: 0;
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .modal-footer {
+      padding: 16px 24px 20px;
+      border-top: 1px solid var(--color-border-light);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    
     /* === UTILITY CLASSES === */
     .hidden { display: none !important; }
     .text-sm { font-size: 13px; }
@@ -377,16 +568,16 @@
     <div id="home-view">
       <div class="header">
         <div class="header-content">
-          <h1>🎯 GRID</h1>
+          <h1>GRID</h1>
         </div>
       </div>
       <div class="content">
         <div class="card" data-action="start-builder">
-          <h3>🚀 Nouveau Prompt</h3>
+          <h3>Nouveau Prompt</h3>
           <p>Créer un prompt guidé en 3 étapes</p>
         </div>
         <div class="card" data-action="show-library">
-          <h3>📚 Bibliothèque</h3>
+          <h3>Bibliothèque</h3>
           <p>Templates et historique</p>
         </div>
       </div>
@@ -625,6 +816,25 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
             <input type="checkbox" id="use-xml"> Utiliser structure XML avancée
           </label>
         </div>
+      </div>
+    </div>
+
+    <!-- LIBRARY VIEW -->
+    <div id="library-view" class="hidden">
+      <div class="header">
+        <div class="header-content">
+          <h1>📚 Bibliothèque</h1>
+        </div>
+        <div class="nav-buttons">
+          <button class="nav-btn" data-action="go-home" title="Retour à l'accueil">
+            <svg viewBox="0 0 24 24">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="content content-full" id="library-content">
+        <!-- Le contenu sera généré dynamiquement -->
       </div>
     </div>
 
