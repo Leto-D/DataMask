@@ -1,204 +1,13 @@
 // GRID Extension - Popup Script
 console.log('GRID Extension popup script loaded');
 
-// Exemples de prompts intégrés
-const promptExamples = [
-  {
-    id: 'swot-analysis',
-    title: 'Analyse SWOT d\'entreprise',
-    category: 'business',
-    description: 'Analyse stratégique complète au format JSON',
-    tags: ['stratégie', 'analyse', 'swot', 'business'],
-    data: {
-      objectif: 'produire une analyse SWOT complète en JSON',
-      audience: ['équipe-direction', 'expert'],
-      contexte: 'Entreprise fictive : "LeadGenPro"\nSecteur : Logiciels B2B pour la génération de leads industriels\nPublic cible : investisseurs et direction commerciale',
-      instructions: '1. Fournis la sortie uniquement au format JSON.\n2. Chaque partie SWOT (forces, faiblesses, opportunités, menaces) doit contenir 3 à 5 points clairs.\n3. Utilise des phrases concises et orientées business.\n4. Pas d\'introduction, uniquement le JSON.',
-      criteres: 'Réponse complète, cohérente, utilisable, format JSON strict',
-      role: 'consultant-senior',
-      competences: 'analyse stratégique, analyse SWOT',
-      exemples: 'Input: Analyser les forces internes\nOutput: "Large base de clients fidèles", "Technologie propriétaire innovante"\n\nInput: Identifier une faiblesse\nOutput: "Dépendance à un seul canal de distribution"\n\nInput: Opportunité de marché\nOutput: "Expansion vers l\'Europe de l\'Est"',
-      prefill: '{"Strengths": ["Large base de clients fidèles", "Technologie propriétaire innovante"], "Weaknesses": ["Dépendance à un seul canal de distribution"], "Opportunities": ["Expansion vers l\'Europe de l\'Est"], "Threats": ["Nouvelle réglementation sur la data"]}',
-      longueur: 'moyenne',
-      creativite: 'factuelle',
-      format: 'json',
-      reasoning: 'justification',
-      eagerness: 'medium',
-      reasoningEffort: 'medium',
-      verbosity: 'concise',
-      allowUnknown: false,
-      requireSources: false,
-      useXml: true
-    }
-  },
-  
-  {
-    id: 'logistics-kpis',
-    title: 'KPIs Logistique',
-    category: 'business',
-    description: 'Définition d\'indicateurs de performance logistique',
-    tags: ['kpi', 'logistique', 'performance', 'distribution'],
-    data: {
-      objectif: 'définir 5 indicateurs clés de performance (KPIs) pour une chaîne logistique de distribution',
-      audience: ['expert', 'technique'],
-      contexte: 'Entreprise fictive : "DistribPro"\nSecteur : Distribution de produits électroniques\nPublic cible : responsable logistique et direction opérationnelle\nObjectif : Optimiser les coûts et les délais de livraison',
-      instructions: '1. Fournis la sortie au format JSON.\n2. Définis 5 KPIs répartis dans les catégories : Approvisionnement, Transport, Stockage, Stocks.\n3. Pour chaque KPI, précise : nom, définition, formule de calcul, unité, et objectif cible.\n4. Inclut une brève justification du choix de chaque KPI.',
-      criteres: 'KPIs mesurables, pertinents, réalistes, avec formules de calcul précises',
-      role: 'consultant-senior',
-      competences: 'logistique, gestion de la performance',
-      exemples: 'Input: KPI de livraison\nOutput: {\n  "name": "Taux de livraison à temps",\n  "definition": "Pourcentage de commandes livrées à la date promise",\n  "formula": "(Nombre de commandes livrées à temps / Nombre total de commandes) * 100",\n  "unit": "%",\n  "target": "≥ 95%",\n  "justification": "Indicateur clé de la satisfaction client et de l\'efficacité du transport"\n}',
-      prefill: '{"KPIs": [{"name": "Taux de livraison à temps", "definition": "Pourcentage de commandes livrées à la date promise", "formula": "(Nombre de commandes livrées à temps / Nombre total de commandes) * 100", "unit": "%", "target": "≥ 95%", "justification": "Indicateur clé de la satisfaction client et de l\'efficacité du transport"}]}',
-      longueur: 'détaillée',
-      creativite: 'factuelle',
-      format: 'json',
-      reasoning: 'justification',
-      eagerness: 'medium',
-      reasoningEffort: 'high',
-      verbosity: 'balanced',
-      allowUnknown: false,
-      requireSources: false,
-      useXml: true
-    }
-  },
-
-  {
-    id: 'dmaic-lean-six-sigma',
-    title: 'Méthodologie DMAIC',
-    category: 'business',
-    description: 'Application de la méthodologie Lean Six Sigma DMAIC',
-    tags: ['lean', 'six-sigma', 'dmaic', 'qualité', 'amélioration'],
-    data: {
-      objectif: 'appliquer la méthodologie DMAIC pour résoudre un problème de qualité dans une ligne de production',
-      audience: ['expert', 'technique'],
-      contexte: 'Entreprise fictive : "IndusPro"\nSecteur : Fabrication de composants automobiles\nProblème : Taux de défauts élevé sur l\'assemblage des circuits imprimés\nPublic cible : responsable qualité et ingénieurs de production',
-      instructions: '1. Fournis la sortie au format JSON.\n2. Structure ta réponse selon les 5 phases DMAIC (Define, Measure, Analyze, Improve, Control).\n3. Pour chaque phase, décris les actions clés et les outils utilisés.\n4. Inclut un exemple de résultat attendu pour la phase "Improve".',
-      criteres: 'Structure DMAIC complète, outils appropriés, actions concrètes',
-      role: 'consultant-senior',
-      competences: 'Lean Six Sigma, amélioration des processus industriels',
-      exemples: 'Input: Phase Define\nOutput: {\n  "Define": {\n    "actions": ["Définir le problème", "Identifier les CTQs", "Cartographier le processus"],\n    "tools": ["SIPOC", "Diagramme de Pareto"]\n  }\n}\n\nInput: Phase Measure\nOutput: {\n  "Measure": {\n    "actions": ["Mesurer la performance actuelle", "Collecter des données"],\n    "tools": ["Capabilité processus", "Gage R&R"]\n  }\n}',
-      prefill: '{"DMAIC": {"Define": {"actions": ["Définir le problème", "Identifier les CTQs", "Cartographier le processus"], "tools": ["SIPOC", "Diagramme de Pareto"]}, "Measure": {"actions": ["Mesurer la performance actuelle", "Collecter des données"], "tools": ["Capabilité processus", "Gage R&R"]}}}',
-      longueur: 'détaillée',
-      creativite: 'factuelle',
-      format: 'json',
-      reasoning: 'step-by-step',
-      eagerness: 'high',
-      reasoningEffort: 'high',
-      verbosity: 'detailed',
-      allowUnknown: false,
-      requireSources: true,
-      useXml: true
-    }
-  },
-
-  {
-    id: 'swot-quiz',
-    title: 'Quiz SWOT',
-    category: 'education',
-    description: 'Quiz de formation sur l\'analyse SWOT',
-    tags: ['quiz', 'formation', 'swot', 'éducation'],
-    data: {
-      objectif: 'créer un quiz de 5 questions à choix multiples sur l\'analyse SWOT',
-      audience: ['intermédiaire'],
-      contexte: 'Public cible : étudiants en gestion d\'entreprise\nNiveau : intermédiaire\nObjectif : Évaluer la compréhension des concepts clés de l\'analyse SWOT',
-      instructions: '1. Fournis la sortie au format JSON.\n2. Chaque question doit avoir 4 options (A, B, C, D) avec une seule bonne réponse.\n3. Inclut une explication pour chaque bonne réponse.\n4. Les questions doivent couvrir : définition, facteurs internes/externes, interprétation de la matrice.',
-      criteres: 'Questions pertinentes, niveau approprié, explications claires',
-      role: 'expert-marketing',
-      competences: 'stratégie d\'entreprise, analyse SWOT, formation',
-      exemples: 'Input: Question sur définition SWOT\nOutput: {\n  "question": "Que signifie le \'S\' dans SWOT ?",\n  "options": {\n    "A": "Strategy",\n    "B": "Strengths", \n    "C": "System",\n    "D": "Sales"\n  },\n  "correct_answer": "B",\n  "explanation": "Le \'S\' dans SWOT signifie \'Strengths\' (Forces), qui représentent les avantages internes de l\'entreprise."\n}',
-      prefill: '{"questions": [{"question": "Que signifie le \'S\' dans SWOT ?", "options": {"A": "Strategy", "B": "Strengths", "C": "System", "D": "Sales"}, "correct_answer": "B", "explanation": "Le \'S\' dans SWOT signifie \'Strengths\' (Forces), qui représentent les avantages internes de l\'entreprise."}]}',
-      longueur: 'moyenne',
-      creativite: 'modérée',
-      format: 'json',
-      reasoning: 'justification',
-      eagerness: 'medium',
-      reasoningEffort: 'medium',
-      verbosity: 'balanced',
-      allowUnknown: false,
-      requireSources: false,
-      useXml: true
-    }
-  },
-
-  {
-    id: 'social-media-kpis',
-    title: 'KPIs Réseaux Sociaux',
-    category: 'marketing',
-    description: 'KPIs pour campagne marketing digitale',
-    tags: ['marketing', 'réseaux-sociaux', 'kpi', 'digital'],
-    data: {
-      objectif: 'recommander des KPIs pertinents pour mesurer l\'efficacité d\'une campagne marketing sur les réseaux sociaux',
-      audience: ['expert', 'technique'],
-      contexte: 'Entreprise fictive : "BrandBoost"\nSecteur : Agence de communication digitale\nCampagne : Lancement d\'un nouveau produit cosmétique sur Instagram et TikTok\nPublic cible : responsable marketing et chef de projet\nObjectif : Maximiser l\'engagement et les conversions',
-      instructions: '1. Fournis la sortie au format JSON.\n2. Recommande 5 KPIs avec leur définition, formule, et objectif cible.\n3. Classe les KPIs par catégorie : Awareness, Engagement, Conversion.\n4. Justifie le choix de chaque KPI en lien avec les objectifs de la campagne.',
-      criteres: 'KPIs mesurables, pertinents pour réseaux sociaux, objectifs réalistes',
-      role: 'expert-marketing',
-      competences: 'marketing digital, analyse de données',
-      exemples: 'Input: KPI d\'engagement\nOutput: {\n  "name": "Taux d\'engagement",\n  "category": "Engagement", \n  "definition": "Pourcentage d\'interactions par rapport à la portée",\n  "formula": "(Likes + Commentaires + Partages) / Portée * 100",\n  "target": "≥ 3%",\n  "justification": "Mesure la pertinence du contenu pour l\'audience cible"\n}',
-      prefill: '{"KPIs": [{"name": "Taux d\'engagement", "category": "Engagement", "definition": "Pourcentage d\'interactions par rapport à la portée", "formula": "(Likes + Commentaires + Partages) / Portée * 100", "target": "≥ 3%", "justification": "Mesure la pertinence du contenu pour l\'audience cible"}]}',
-      longueur: 'détaillée',
-      creativite: 'modérée',
-      format: 'json',
-      reasoning: 'justification',
-      eagerness: 'medium',
-      reasoningEffort: 'medium',
-      verbosity: 'balanced',
-      allowUnknown: false,
-      requireSources: false,
-      useXml: true
-    }
-  },
-
-  {
-    id: 'lean-six-sigma-deployment',
-    title: 'Déploiement Lean Six Sigma',
-    category: 'business',
-    description: 'Plan de déploiement d\'une démarche Lean Six Sigma',
-    tags: ['lean', 'six-sigma', 'transformation', 'déploiement'],
-    data: {
-      objectif: 'élaborer un plan de déploiement d\'une démarche Lean Six Sigma dans une entreprise de services',
-      audience: ['équipe-direction', 'expert'],
-      contexte: 'Entreprise fictive : "ServicePro"\nSecteur : Services financiers (banque en ligne)\nPublic cible : direction générale et responsables opérationnels\nObjectif : Réduire les délais de traitement des demandes de prêt de 30%',
-      instructions: '1. Fournis la sortie au format JSON.\n2. Structure ton plan en 3 phases : Préparation, Déploiement, Pérennisation.\n3. Pour chaque phase, décris les actions clés, les acteurs impliqués, et les livrables attendus.\n4. Inclut un calendrier prévisionnel sur 12 mois.',
-      criteres: 'Plan structuré, phases logiques, calendrier réaliste, acteurs identifiés',
-      role: 'consultant-senior',
-      competences: 'Lean Six Sigma, transformation organisationnelle',
-      exemples: 'Input: Phase de préparation\nOutput: {\n  "Préparation": {\n    "actions": ["Diagnostic initial", "Formation des Yellow Belts", "Sélection des projets pilotes"],\n    "actors": ["Direction", "Consultant externe", "Responsables opérationnels"],\n    "deliverables": ["Rapport de diagnostic", "Plan de formation", "Cahier des charges projets pilotes"],\n    "timeline": "Mois 1-3"\n  }\n}',
-      prefill: '{"plan": {"Préparation": {"actions": ["Diagnostic initial", "Formation des Yellow Belts", "Sélection des projets pilotes"], "actors": ["Direction", "Consultant externe", "Responsables opérationnels"], "deliverables": ["Rapport de diagnostic", "Plan de formation", "Cahier des charges projets pilotes"], "timeline": "Mois 1-3"}}}',
-      longueur: 'détaillée',
-      creativite: 'factuelle',
-      format: 'json',
-      reasoning: 'step-by-step',
-      eagerness: 'high',
-      reasoningEffort: 'high',
-      verbosity: 'detailed',
-      allowUnknown: false,
-      requireSources: true,
-      useXml: true
-    }
-  }
-];
-
-// Fonctions utilitaires
-function getExamplesByCategory(category) {
-  return promptExamples.filter(function(example) { 
-    return example.category === category; 
-  });
-}
-
-function getExampleById(id) {
-  return promptExamples.find(function(example) { 
-    return example.id === id; 
-  });
-}
-
-function getCategories() {
-  var categories = promptExamples.map(function(example) { 
-    return example.category; 
-  });
-  return categories.filter(function(value, index, self) { 
-    return self.indexOf(value) === index; 
-  }).sort();
-}
+// Import des exemples de prompts et utilitaires depuis le module externe
+import { 
+  promptExamples, 
+  getExamplesByCategory, 
+  getExampleById, 
+  getCategories 
+} from '../utils/promptExamples.js';
 
 // État de l'application
 const appState = {
@@ -303,34 +112,59 @@ function generatePrompt() {
 }
 
 function generateAdvancedXmlPrompt(data, roleText) {
-  let prompt = `<instructions>
+  const sections = [];
+  
+  // Instructions principales
+  sections.push(`<instructions>
 Tu es ${roleText}${data.competences ? ` avec les compétences suivantes : ${data.competences}` : ''}.
 Ta tâche est de ${data.objectif || 'répondre à la demande de l\'utilisateur'}.
-</instructions>
+</instructions>`);
 
-${data.contexte ? `<context>
+  // Contexte si fourni
+  if (data.contexte) {
+    sections.push(`<context>
 ${data.contexte}
-</context>
+</context>`);
+  }
 
-` : ''}${data.instructions ? `<requirements>
-${data.instructions.split('\n').map(line => line.trim()).filter(line => line).map((line, i) => `${i + 1}. ${line}`).join('\n')}
-${data.criteres ? `\nCritères de succès : ${data.criteres}` : ''}
-${generateReasoningInstructions(data.reasoning)}
-${generateFormatRequirements(data)}
-</requirements>
+  // Exigences si fournies
+  if (data.instructions) {
+    const formattedInstructions = data.instructions
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line)
+      .map((line, i) => `${i + 1}. ${line}`)
+      .join('\n');
+    
+    const requirements = [
+      formattedInstructions,
+      data.criteres ? `\nCritères de succès : ${data.criteres}` : '',
+      generateReasoningInstructions(data.reasoning),
+      generateFormatRequirements(data)
+    ].filter(Boolean).join('');
 
-` : ''}${data.exemples ? `<example>
+    sections.push(`<requirements>${requirements}
+</requirements>`);
+  }
+
+  // Exemples si fournis
+  if (data.exemples) {
+    sections.push(`<example>
 ${data.exemples}
-</example>
+</example>`);
+  }
 
-` : ''}${data.prefill ? `<formatting>
-${generateFormattingInstructions(data)}
-${data.prefill ? `Sortie attendue (à compléter) : ${data.prefill}` : ''}
-</formatting>` : `<formatting>
-${generateFormattingInstructions(data)}
-</formatting>`}`;
+  // Formatage
+  const formattingContent = [
+    generateFormattingInstructions(data),
+    data.prefill ? `Sortie attendue (à compléter) : ${data.prefill}` : ''
+  ].filter(Boolean).join('\n');
 
-  return prompt;
+  sections.push(`<formatting>
+${formattingContent}
+</formatting>`);
+
+  return sections.join('\n\n');
 }
 
 function generateSimpleXmlPrompt(data, roleText) {
@@ -391,26 +225,36 @@ function generateReasoningInstructions(reasoningType) {
     'auto-reflexion': 'Commence par analyser la demande, réfléchis aux approches possibles, puis donne ta réponse.'
   };
   
-  return reasoningType !== 'none' ? `\n${instructions[reasoningType] || ''}` : '';
+  return reasoningType !== 'none' && instructions[reasoningType] 
+    ? `\n${instructions[reasoningType]}` 
+    : '';
 }
 
 function generateFormatRequirements(data) {
-  let requirements = [];
+  const requirements = [];
   
-  if (data.format === 'json') {
-    requirements.push('Fournis la sortie uniquement au format JSON.');
-  } else if (data.format === 'rapport') {
-    requirements.push('Structure ta réponse comme un rapport professionnel.');
-  } else if (data.format === 'liste') {
-    requirements.push('Présente ta réponse sous forme de liste organisée.');
+  // Format de sortie
+  const formatMap = {
+    'json': 'Fournis la sortie uniquement au format JSON.',
+    'rapport': 'Structure ta réponse comme un rapport professionnel.',
+    'liste': 'Présente ta réponse sous forme de liste organisée.'
+  };
+  
+  if (formatMap[data.format]) {
+    requirements.push(formatMap[data.format]);
   }
   
-  if (data.longueur === 'courte') {
-    requirements.push('Réponse concise (100-300 mots maximum).');
-  } else if (data.longueur === 'détaillée') {
-    requirements.push('Réponse détaillée et exhaustive (600+ mots).');
+  // Longueur
+  const lengthMap = {
+    'courte': 'Réponse concise (100-300 mots maximum).',
+    'détaillée': 'Réponse détaillée et exhaustive (600+ mots).'
+  };
+  
+  if (lengthMap[data.longueur]) {
+    requirements.push(lengthMap[data.longueur]);
   }
   
+  // Options avancées
   if (data.requireSources) {
     requirements.push('Inclus des sources ou références quand c\'est pertinent.');
   }

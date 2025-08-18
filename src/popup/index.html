@@ -39,7 +39,7 @@
 
     /* === APP STRUCTURE === */
     body {
-      width: 400px;
+      width: 480px;
       height: 600px;
       margin: 0;
       padding: 0;
@@ -232,7 +232,7 @@
       font-weight: 400;
     }
     
-    /* === FORM ELEMENTS MODERNES === */
+    /* === FORM ELEMENTS  === */
     .form-group {
       margin-bottom: 20px;
     }
@@ -580,16 +580,16 @@
       }
     }
     
-    /* Responsive - Passe l'écran à 420px sur 650px */
-    @media (max-width: 450px) {
+    /* Responsive - Dimensions pour écrans plus petits */
+    @media (max-width: 500px) {
       body {
-        width: 420px;
-        height: 650px;
+        width: 480px;
+        height: 600px;
       }
       
       #root {
-        width: 420px;
-        height: 650px;
+        width: 480px;
+        height: 600px;
       }
       
       .header {
@@ -693,7 +693,7 @@
         
         <!-- Pied de page -->
         <div style="text-align: center; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--color-border);">
-          <p style="font-size: 12px; color: var(--color-text-secondary);">© 2025 GRID - AI Prompt Builder</p>
+          <p style="font-size: 12px; color: var(--color-text-secondary);">© 2025 GRID - AI Prompt Builder (By LetoD)</p>
         </div>
       </div>
     </div>
@@ -980,6 +980,6 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
     </div>
   </div>
 
-  <script src="./popup.js"></script>
+  <script type="module" src="./popup.js"></script>
 </body>
 </html>
