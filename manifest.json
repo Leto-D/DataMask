@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "GRID Test",
+  "name": "GRID - AI Prompt Builder",
   "version": "1.0.0",
-  "description": "Test simple de GRID",
+  "description": "Extension Chrome d'aide à la création de prompts pour LLM - Outil de productivité pour créer des prompts efficaces",
   "action": {
     "default_popup": "src/popup/index.html",
-    "default_title": "GRID"
-  }
+    "default_title": "GRID - AI Prompt Builder"
+  },
+  "permissions": []
 }

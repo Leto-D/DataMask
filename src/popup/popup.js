@@ -80,14 +80,29 @@ function collectStep3Data() {
 
 // === HELPERS POUR LES SUGGESTIONS ===
 function fillObjectif(text) {
-  document.getElementById('objectif').value = text + ' ';
-  document.getElementById('objectif').focus();
+  const input = document.getElementById('objectif');
+  const currentValue = input.value;
+  if (currentValue.trim() === '') {
+    input.value = text + ' ';
+  } else {
+    // Insérer au début si pas vide
+    input.value = text + ' ' + currentValue;
+  }
+  input.focus();
+  // Positionner le curseur après le texte ajouté
+  const pos = text.length + 1;
+  input.setSelectionRange(pos, pos);
 }
 
 function addCompetence(competence) {
   const input = document.getElementById('competences');
-  const current = input.value;
+  const current = input.value.trim();
+  // Ne pas ajouter si la compétence existe déjà
+  if (current && current.toLowerCase().includes(competence.toLowerCase())) {
+    return;
+  }
   input.value = current ? current + ', ' + competence : competence;
+  input.focus();
 }
 
 // === GÉNÉRATION DU PROMPT ===
