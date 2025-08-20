@@ -1,81 +1,9 @@
-// GRID Extension - Popup Script (Version simplifiée qui marche)
-console.log('🚀 GRID Extension popup script loaded');
+// GRID Extension - Popup Script DEBUG (Sans imports)
+console.log('🔧 GRID Extension popup script DEBUG loaded');
 
-// === SYSTÈME I18N INTÉGRÉ ===
-const translations = {
-  fr: {
-    app_title: "GRID - AI Prompt Builder",
-    app_subtitle: "Création de Prompts & IA",
-    start_button: "Commencer",
-    library_button: "Bibliothèque",
-    step1_title: "Étape 1: Définir l'objectif",
-    step2_title: "Étape 2: Structurer", 
-    step3_title: "Étape 3: Personnaliser",
-    library_title: "Bibliothèque",
-    result_title: "Prompt généré"
-  },
-  en: {
-    app_title: "GRID - AI Prompt Builder",
-    app_subtitle: "Prompt Creation & AI",
-    start_button: "Start",
-    library_button: "Library",
-    step1_title: "Step 1: Define objective",
-    step2_title: "Step 2: Structure",
-    step3_title: "Step 3: Personalize", 
-    library_title: "Library",
-    result_title: "Generated prompt"
-  },
-  de: {
-    app_title: "GRID - AI Prompt Builder",
-    app_subtitle: "Prompt-Erstellung & KI",
-    start_button: "Starten",
-    library_button: "Bibliothek",
-    step1_title: "Schritt 1: Ziel definieren",
-    step2_title: "Schritt 2: Strukturieren",
-    step3_title: "Schritt 3: Personalisieren",
-    library_title: "Bibliothek", 
-    result_title: "Generierter Prompt"
-  }
-};
+// === NAVIGATION DE BASE SANS IMPORTS ===
 
-class I18n {
-  constructor() {
-    this.currentLanguage = this.loadLanguage();
-  }
-
-  loadLanguage() {
-    return localStorage.getItem('grid-language') || 'fr';
-  }
-
-  setLanguage(lang) {
-    this.currentLanguage = lang;
-    localStorage.setItem('grid-language', lang);
-    this.updateDOM();
-  }
-
-  t(key, fallback = null) {
-    return translations[this.currentLanguage]?.[key] || fallback || key;
-  }
-
-  updateDOM() {
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-      const key = element.getAttribute('data-i18n');
-      if (key) {
-        // Protection pour les boutons avec SVG
-        if (element.closest('button') && element.closest('button').querySelector('svg')) {
-          return;
-        } else {
-          element.textContent = this.t(key);
-        }
-      }
-    });
-  }
-}
-
-const i18n = new I18n();
-const t = (key, fallback = null) => i18n.t(key, fallback);
-
-// === ÉTAT DE L'APPLICATION ===
+// État de l'application
 const appState = {
   currentStep: 'home',
   data: {}
@@ -123,17 +51,20 @@ function goToStep1() {
 
 function goToStep2() { 
   console.log('2️⃣ goToStep2 appelée');
+  // collectStep1Data(); // Temporairement désactivé
   showView('step2-view'); 
 }
 
 function goToStep3() { 
   console.log('3️⃣ goToStep3 appelée');
+  // collectStep2Data(); // Temporairement désactivé
   showView('step3-view'); 
 }
 
 function showLibrary() {
   console.log('📚 showLibrary appelée');
   showView('library-view');
+  // renderLibrary(); // Temporairement désactivé
 }
 
 function generatePrompt() {
@@ -144,34 +75,18 @@ function generatePrompt() {
 function copyPrompt() {
   console.log('📋 copyPrompt appelée');
   // Fonction simplifiée pour test
-  alert('Prompt copié !');
+  alert('Fonctionnalité copie - TEST');
 }
 
-// === INITIALISATION ===
+// === INITIALISATION SIMPLIFIÉE ===
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🚀 DOM loaded, initializing GRID extension...');
+  console.log('🚀 DOM loaded, initializing GRID extension DEBUG...');
   
   try {
     // Vérifications de base
     console.log('🔍 Vérifications de base:');
     console.log('  - Vues trouvées:', document.querySelectorAll('[id$="-view"]').length);
     console.log('  - Boutons avec data-action:', document.querySelectorAll('[data-action]').length);
-    
-    // === SÉLECTEUR DE LANGUE ===
-    const languageSelector = document.getElementById('language-selector');
-    if (languageSelector) {
-      // Définir la langue actuelle
-      languageSelector.value = i18n.currentLanguage;
-      
-      languageSelector.addEventListener('change', function(e) {
-        console.log('🌍 Changement de langue:', e.target.value);
-        i18n.setLanguage(e.target.value);
-      });
-      console.log('  ✅ Sélecteur de langue configuré');
-    }
-    
-    // Appliquer les traductions
-    i18n.updateDOM();
     
     // === EVENT LISTENERS POUR LA NAVIGATION ===
     
@@ -225,7 +140,24 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    console.log('✅ GRID extension initialized successfully');
+    console.log('✅ GRID extension DEBUG initialized successfully');
+    
+    // Test automatique après 3 secondes
+    setTimeout(() => {
+      console.log('🧪 Test automatique de navigation...');
+      console.log('Test 1: startBuilder()');
+      startBuilder();
+      
+      setTimeout(() => {
+        console.log('Test 2: goToStep2()');
+        goToStep2();
+      }, 1000);
+      
+      setTimeout(() => {
+        console.log('Test 3: goHome()');
+        goHome();
+      }, 2000);
+    }, 3000);
     
   } catch (error) {
     console.error('❌ Erreur lors de l\'initialisation:', error);

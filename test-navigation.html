@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Navigation GRID Extension</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+    .test-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .nav-btn {
+      background: #333;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .nav-btn:hover {
+      background: #555;
+    }
+    .view {
+      padding: 20px;
+      margin: 10px 0;
+      background: #f9f9f9;
+      border-radius: 5px;
+    }
+    .hidden {
+      display: none;
+    }
+    .language-selector {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    select {
+      padding: 5px 10px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>Test de Navigation GRID</h1>
+    
+    <div class="language-selector">
+      <label for="lang-select">Langue:</label>
+      <select id="lang-select">
+        <option value="fr">🇫🇷 Français</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="de">🇩🇪 Deutsch</option>
+      </select>
+    </div>
+
+    <!-- HOME VIEW -->
+    <div id="home-view" class="view">
+      <h2 data-i18n="home">Accueil</h2>
+      <p data-i18n="app_description">Outil de productivité pour créer des prompts efficaces</p>
+      <button class="nav-btn" data-action="start-builder">
+        <span data-i18n="start_button">Commencer</span>
+      </button>
+    </div>
+
+    <!-- STEP 1 VIEW -->
+    <div id="step1-view" class="view hidden">
+      <h2 data-i18n="step1">Étape 1: Définir l'objectif</h2>
+      <p>Contenu de l'étape 1...</p>
+      <button class="nav-btn" data-action="go-home" data-i18n-title="back">← Accueil</button>
+      <button class="nav-btn" data-action="go-step2" data-i18n-title="next">Étape 2 →</button>
+    </div>
+
+    <!-- STEP 2 VIEW -->
+    <div id="step2-view" class="view hidden">
+      <h2 data-i18n="step2">Étape 2: Structurer</h2>
+      <p>Contenu de l'étape 2...</p>
+      <button class="nav-btn" data-action="go-step1" data-i18n-title="previous">← Étape 1</button>
+      <button class="nav-btn" data-action="go-step3" data-i18n-title="next">Étape 3 →</button>
+    </div>
+
+    <!-- STEP 3 VIEW -->
+    <div id="step3-view" class="view hidden">
+      <h2 data-i18n="step3">Étape 3: Personnaliser</h2>
+      <p>Contenu de l'étape 3...</p>
+      <button class="nav-btn" data-action="go-step2" data-i18n-title="previous">← Étape 2</button>
+      <button class="nav-btn" data-action="generate-prompt" data-i18n-title="generate">Générer</button>
+    </div>
+
+    <!-- RESULT VIEW -->
+    <div id="result-view" class="view hidden">
+      <h2 data-i18n="result">Prompt généré</h2>
+      <p>Votre prompt a été généré !</p>
+      <button class="nav-btn" data-action="go-home" data-i18n-title="back">← Accueil</button>
+    </div>
+
+    <div style="margin-top: 20px; padding: 10px; background: #e0e0e0; border-radius: 5px;">
+      <strong>État actuel:</strong> <span id="current-state">home</span>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import du système d'internationalisation
+    import { i18n, t } from './src/utils/i18n.js';
+
+    // État de l'application
+    let currentView = 'home';
+
+    // === NAVIGATION ===
+    function showView(viewId) {
+      console.log('Showing view:', viewId);
+      document.querySelectorAll('.view').forEach(view => {
+        view.classList.add('hidden');
+      });
+      document.getElementById(viewId + '-view').classList.remove('hidden');
+      currentView = viewId;
+      document.getElementById('current-state').textContent = viewId;
+    }
+
+    function goHome() { 
+      console.log('Going home');
+      showView('home'); 
+    }
+
+    function startBuilder() { 
+      console.log('Starting builder');
+      showView('step1'); 
+    }
+
+    function goToStep1() { 
+      console.log('Going to step1');
+      showView('step1'); 
+    }
+
+    function goToStep2() { 
+      console.log('Going to step2');
+      showView('step2'); 
+    }
+
+    function goToStep3() { 
+      console.log('Going to step3');
+      showView('step3'); 
+    }
+
+    function generatePrompt() {
+      console.log('Generating prompt');
+      showView('result');
+    }
+
+    // === GESTION DES LANGUES ===
+    function initializeLanguage() {
+      const languageSelector = document.getElementById('lang-select');
+      if (languageSelector) {
+        // Définir la langue actuelle
+        languageSelector.value = i18n.getCurrentLanguage();
+        
+        // Écouter les changements
+        languageSelector.addEventListener('change', function(e) {
+          const newLang = e.target.value;
+          console.log('Changing language to:', newLang);
+          if (i18n.setLanguage(newLang)) {
+            console.log('Language changed successfully');
+          }
+        });
+      }
+      
+      // Mettre à jour le DOM avec la langue actuelle
+      i18n.updateDOM();
+    }
+
+    // === INITIALISATION ===
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing test...');
+      
+      // Initialiser les langues
+      try {
+        initializeLanguage();
+        console.log('Language system initialized');
+      } catch (error) {
+        console.error('Error initializing language system:', error);
+      }
+      
+      // Event listeners pour la navigation
+      document.querySelectorAll('[data-action="go-home"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          console.log('Home button clicked');
+          goHome();
+        });
+      });
+      
+      document.querySelectorAll('[data-action="start-builder"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          console.log('Start builder button clicked');
+          startBuilder();
+        });
+      });
+      
+      document.querySelectorAll('[data-action="go-step1"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          console.log('Step 1 button clicked');
+          goToStep1();
+        });
+      });
+      
+      document.querySelectorAll('[data-action="go-step2"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          console.log('Step 2 button clicked');
+          goToStep2();
+        });
+      });
+      
+      document.querySelectorAll('[data-action="go-step3"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          console.log('Step 3 button clicked');
+          goToStep3();
+        });
+      });
+      
+      document.querySelectorAll('[data-action="generate-prompt"]').forEach(btn => {
+        btn.addEventListener('click', function() {
+          console.log('Generate button clicked');
+          generatePrompt();
+        });
+      });
+      
+      console.log('Navigation test initialized successfully');
+    });
+  </script>
+</body>
+</html>

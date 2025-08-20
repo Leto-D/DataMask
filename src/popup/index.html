@@ -631,12 +631,30 @@
         <div class="header-content">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
             <h1 style="font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700; color: var(--color-text-primary); margin: 0; text-align: left;">GRID</h1>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--color-text-secondary)" style="cursor: pointer;">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <!-- Sélecteur de langue -->
+              <select id="language-selector" style="
+                background: var(--color-surface);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-sm);
+                padding: 6px 10px;
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--color-text-primary);
+                cursor: pointer;
+                transition: all var(--transition-fast);
+              ">
+                <option value="fr">🇫🇷 FR</option>
+                <option value="en">🇺🇸 EN</option>
+                <option value="de">🇩🇪 DE</option>
+              </select>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--color-text-secondary)" style="cursor: pointer;">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
           </div>
-          <h1 style="font-size: 28px; font-weight: 600; margin: 0 0 16px 0; text-align: center;">Création de Prompts & IA</h1>
-          <p style="font-size: 16px; color: var(--color-text-secondary); margin: 0; text-align: center;">Outil de productivité pour créer des prompts efficaces</p>
+          <h1 style="font-size: 28px; font-weight: 600; margin: 0 0 16px 0; text-align: center;" data-i18n="app_subtitle">Création de Prompts & IA</h1>
+          <p style="font-size: 16px; color: var(--color-text-secondary); margin: 0; text-align: center;" data-i18n="app_description">Outil de productivité pour créer des prompts efficaces</p>
         </div>
       </div>
       <div class="content">
@@ -648,7 +666,7 @@
                 <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
               </svg>
             </div>
-            <span style="font-size: 12px; color: var(--color-text-secondary);">Rapide</span>
+            <span style="font-size: 12px; color: var(--color-text-secondary);" data-i18n="features.fast">Rapide</span>
           </div>
           <div style="text-align: center;">
             <div style="width: 48px; height: 48px; background: var(--color-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
@@ -656,7 +674,7 @@
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
               </svg>
             </div>
-            <span style="font-size: 12px; color: var(--color-text-secondary);">Structuré</span>
+            <span style="font-size: 12px; color: var(--color-text-secondary);" data-i18n="features.structured">Structuré</span>
           </div>
           <div style="text-align: center;">
             <div style="width: 48px; height: 48px; background: var(--color-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
@@ -664,7 +682,7 @@
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
               </svg>
             </div>
-            <span style="font-size: 12px; color: var(--color-text-secondary);">Efficace</span>
+            <span style="font-size: 12px; color: var(--color-text-secondary);" data-i18n="features.efficient">Efficace</span>
           </div>
         </div>
         
@@ -683,19 +701,19 @@
             transition: all var(--transition-fast);
             box-shadow: var(--shadow-subtle);
           " onmouseover="this.style.background='var(--color-accent-light)'; this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--color-accent)'; this.style.boxShadow='var(--shadow-subtle)'; this.style.transform='translateY(0)'">
-            Commencer
+            <span data-i18n="start_button">Commencer</span>
           </button>
         </div>
         
         <!-- Cards d'actions -->
         <div class="card" data-action="show-library">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-            <h3 style="margin: 0;">Bibliothèque</h3>
+            <h3 style="margin: 0;" data-i18n="library">Bibliothèque</h3>
             <div id="template-count-badge" style="background: var(--color-accent); color: #000000; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: 600;">
               6 TEMPLATES
             </div>
           </div>
-          <p style="margin-bottom: 16px;">Templates et exemples de prompts</p>
+          <p style="margin-bottom: 16px;" data-i18n="library_subtitle">Templates et exemples de prompts</p>
           <div style="display: flex; gap: 8px; margin-bottom: 12px;">
             <span style="background: rgba(255, 193, 7, 0.2); color: #000000; padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: 500;">SWOT</span>
             <span style="background: rgba(255, 193, 7, 0.2); color: #000000; padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: 500;">KPIs</span>
@@ -710,7 +728,7 @@
         
         <!-- Pied de page -->
         <div style="text-align: center; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--color-border);">
-          <p style="font-size: 12px; color: var(--color-text-secondary);">© 2025 GRID - AI Prompt Builder (By LetoD)</p>
+          <p style="font-size: 12px; color: var(--color-text-secondary);" data-i18n="footer">© 2025 GRID - AI Prompt Builder (By LetoD)</p>
         </div>
       </div>
     </div>
@@ -719,7 +737,7 @@
     <div id="step1-view" class="hidden">
       <div class="header">
         <div class="header-content">
-          <h1>Étape 1: Définir l'objectif</h1>
+          <h1 data-i18n="step1">Étape 1: Définir l'objectif</h1>
           <div class="progress-bar">
             <div class="progress-fill" style="width: 33%"></div>
           </div>
@@ -739,8 +757,8 @@
       </div>
       <div class="content content-full">
         <div class="form-group">
-          <label class="form-label">Objectif principal</label>
-          <textarea id="objectif" class="form-input form-textarea" placeholder="Décrivez précisément ce que vous attendez de l'IA..."></textarea>
+          <label class="form-label" data-i18n="objective_label">Objectif principal</label>
+          <textarea id="objectif" class="form-input form-textarea" data-i18n-placeholder="objective_placeholder" placeholder="Décrivez précisément ce que vous attendez de l'IA..."></textarea>
           <div class="suggestions">
             <span class="suggestion-tag" data-suggestion="objectif">Rédiger un rapport</span>
             <span class="suggestion-tag" data-suggestion="objectif">Analyser des données</span>
@@ -754,31 +772,31 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Audience cible</label>
+          <label class="form-label" data-i18n="audience_label">Audience cible</label>
           <select id="audience" class="form-input" multiple>
-            <option value="débutant">Débutant</option>
-            <option value="intermédiaire">Intermédiaire</option>
-            <option value="expert">Expert</option>
-            <option value="équipe-direction">Équipe de direction</option>
-            <option value="grand-public">Grand public</option>
-            <option value="technique">Public technique</option>
+            <option value="débutant" data-i18n-option="audiences.beginner">Débutant</option>
+            <option value="intermédiaire" data-i18n-option="audiences.intermediate">Intermédiaire</option>
+            <option value="expert" data-i18n-option="audiences.expert">Expert</option>
+            <option value="équipe-direction" data-i18n-option="audiences.management">Équipe de direction</option>
+            <option value="grand-public" data-i18n-option="audiences.general_public">Grand public</option>
+            <option value="technique" data-i18n-option="audiences.technical">Public technique</option>
           </select>
-          <p class="text-sm text-muted">Maintenez Ctrl/Cmd pour sélectionner plusieurs options</p>
+          <p class="text-sm text-muted" data-i18n="audience_help">Maintenez Ctrl/Cmd pour sélectionner plusieurs options</p>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Contexte</label>
-          <textarea id="contexte" class="form-input form-textarea" placeholder="Ex: Entreprise: LeadGenPro, Secteur: Logiciels B2B, Public: investisseurs..."></textarea>
+          <label class="form-label" data-i18n="context_label">Contexte</label>
+          <textarea id="contexte" class="form-input form-textarea" data-i18n-placeholder="context_placeholder" placeholder="Ex: Entreprise: LeadGenPro, Secteur: Logiciels B2B, Public: investisseurs..."></textarea>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Instructions séquentielles (optionnel)</label>
-          <textarea id="instructions" class="form-input form-textarea" placeholder="1. Effectuer une analyse...\n2. Proposer des stratégies...\n3. Identifier les KPIs..."></textarea>
+          <label class="form-label" data-i18n="instructions_label">Instructions séquentielles (optionnel)</label>
+          <textarea id="instructions" class="form-input form-textarea" data-i18n-placeholder="instructions_placeholder" placeholder="1. Effectuer une analyse...\n2. Proposer des stratégies...\n3. Identifier les KPIs..."></textarea>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Critères de succès</label>
-          <textarea id="criteres" class="form-input form-textarea" placeholder="Ex: Réponse complète, cohérente, utilisable, avec 3-5 points par section..."></textarea>
+          <label class="form-label" data-i18n="success_criteria_label">Critères de succès</label>
+          <textarea id="criteres" class="form-input form-textarea" data-i18n-placeholder="success_criteria_placeholder" placeholder="Ex: Réponse complète, cohérente, utilisable, avec 3-5 points par section..."></textarea>
         </div>
       </div>
     </div>
@@ -787,7 +805,7 @@
     <div id="step2-view" class="hidden">
       <div class="header">
         <div class="header-content">
-          <h1>Étape 2: Structurer</h1>
+          <h1 data-i18n="step2">Étape 2: Structurer</h1>
           <div class="progress-bar">
             <div class="progress-fill" style="width: 66%"></div>
           </div>
@@ -807,22 +825,22 @@
       </div>
       <div class="content content-full">
         <div class="form-group">
-          <label class="form-label">Rôle et personnalité</label>
+          <label class="form-label" data-i18n="role_label">Rôle et personnalité</label>
           <select id="role" class="form-input">
-            <option value="">Choisir un rôle...</option>
-            <option value="consultant-senior">Consultant Senior en Stratégie</option>
-            <option value="analyste-données">Analyste de Données</option>
-            <option value="expert-marketing">Expert Marketing</option>
-            <option value="développeur-senior">Développeur Senior</option>
-            <option value="rédacteur-technique">Rédacteur Technique</option>
-            <option value="personnalisé">Rôle personnalisé...</option>
+            <option value="" data-i18n="role_placeholder">Choisir un rôle...</option>
+            <option value="consultant-senior" data-i18n-option="roles.senior_consultant">Consultant Senior en Stratégie</option>
+            <option value="analyste-données" data-i18n-option="roles.data_analyst">Analyste de Données</option>
+            <option value="expert-marketing" data-i18n-option="roles.marketing_expert">Expert Marketing</option>
+            <option value="développeur-senior" data-i18n-option="roles.senior_developer">Développeur Senior</option>
+            <option value="rédacteur-technique" data-i18n-option="roles.technical_writer">Rédacteur Technique</option>
+            <option value="personnalisé" data-i18n-option="roles.custom">Rôle personnalisé...</option>
           </select>
-          <input id="role-custom" class="form-input hidden" placeholder="Décrivez le rôle personnalisé..." style="margin-top: 8px;">
+          <input id="role-custom" class="form-input hidden" data-i18n-placeholder="role_custom_placeholder" placeholder="Décrivez le rôle personnalisé..." style="margin-top: 8px;">
         </div>
 
         <div class="form-group">
-          <label class="form-label">Compétences clés</label>
-          <input id="competences" class="form-input" placeholder="Ex: Analyse stratégique, Optimisation, Leadership...">
+          <label class="form-label" data-i18n="skills_label">Compétences clés</label>
+          <input id="competences" class="form-input" data-i18n-placeholder="skills_placeholder" placeholder="Ex: Analyse stratégique, Optimisation, Leadership...">
           <div class="suggestions">
             <span class="suggestion-tag" data-suggestion="competence">Analyse stratégique</span>
             <span class="suggestion-tag" data-suggestion="competence">Pensée critique</span>
@@ -838,21 +856,21 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Exemples Input/Output (multishot)</label>
-          <textarea id="exemples" class="form-input form-textarea" style="min-height: 100px;" placeholder="Exemple 1:
+          <label class="form-label" data-i18n="examples_label">Exemples Input/Output (multishot)</label>
+          <textarea id="exemples" class="form-input form-textarea" style="min-height: 100px;" data-i18n-placeholder="examples_placeholder" placeholder="Exemple 1:
 Input: Analyser les forces internes
 Output: Une force pourrait être une équipe commerciale expérimentée
 
 Exemple 2:
 Input: Identifier une opportunité
 Output: Croissance du marché SaaS dans la santé"></textarea>
-          <p class="text-sm text-muted">Fournissez 2-5 exemples avec format Input → Output</p>
+          <p class="text-sm text-muted" data-i18n="examples_help">Fournissez 2-5 exemples avec format Input → Output</p>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Préremplissage de la réponse (optionnel)</label>
-          <input id="prefill" class="form-input" placeholder='Ex: {"Strengths": [, "Weaknesses": ['>
-          <p class="text-sm text-muted">Format de sortie que l'IA doit commencer à remplir</p>
+          <label class="form-label" data-i18n="prefill_label">Préremplissage de la réponse (optionnel)</label>
+          <input id="prefill" class="form-input" data-i18n-placeholder="prefill_placeholder" placeholder='Ex: {"Strengths": [, "Weaknesses": ['>
+          <p class="text-sm text-muted" data-i18n="prefill_help">Format de sortie que l'IA doit commencer à remplir</p>
         </div>
       </div>
     </div>
@@ -861,7 +879,7 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
     <div id="step3-view" class="hidden">
       <div class="header">
         <div class="header-content">
-          <h1>Étape 3: Personnaliser</h1>
+          <h1 data-i18n="step3">Étape 3: Personnaliser</h1>
           <div class="progress-bar">
             <div class="progress-fill" style="width: 100%"></div>
           </div>
@@ -881,81 +899,81 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
       </div>
       <div class="content content-full">
         <div class="form-group">
-          <label class="form-label">Longueur de réponse</label>
+          <label class="form-label" data-i18n="response_length_label">Longueur de réponse</label>
           <select id="longueur" class="form-input">
-            <option value="courte">Courte (100-300 mots)</option>
-            <option value="moyenne" selected>Moyenne (300-600 mots)</option>
-            <option value="détaillée">Détaillée (600+ mots)</option>
+            <option value="courte" data-i18n-option="lengths.short">Courte (100-300 mots)</option>
+            <option value="moyenne" selected data-i18n-option="lengths.medium">Moyenne (300-600 mots)</option>
+            <option value="détaillée" data-i18n-option="lengths.detailed">Détaillée (600+ mots)</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Niveau de créativité</label>
+          <label class="form-label" data-i18n="creativity_level_label">Niveau de créativité</label>
           <select id="creativite" class="form-input">
-            <option value="factuelle">Factuelle (0% créativité)</option>
-            <option value="modérée" selected>Modérée (30% créativité)</option>
-            <option value="créative">Créative (70% créativité)</option>
+            <option value="factuelle" data-i18n-option="creativity.factual">Factuelle (0% créativité)</option>
+            <option value="modérée" selected data-i18n-option="creativity.moderate">Modérée (30% créativité)</option>
+            <option value="créative" data-i18n-option="creativity.creative">Créative (70% créativité)</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Format de sortie</label>
+          <label class="form-label" data-i18n="output_format_label">Format de sortie</label>
           <select id="format" class="form-input">
-            <option value="texte">Texte libre</option>
-            <option value="rapport" selected>Rapport structuré</option>
-            <option value="liste">Liste à puces</option>
-            <option value="json">Format JSON</option>
+            <option value="texte" data-i18n-option="formats.text">Texte libre</option>
+            <option value="rapport" selected data-i18n-option="formats.report">Rapport structuré</option>
+            <option value="liste" data-i18n-option="formats.list">Liste à puces</option>
+            <option value="json" data-i18n-option="formats.json">Format JSON</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Raisonnement (Chain-of-thought)</label>
+          <label class="form-label" data-i18n="reasoning_label">Raisonnement (Chain-of-thought)</label>
           <select id="reasoning" class="form-input">
-            <option value="none">Aucun raisonnement spécifique</option>
-            <option value="step-by-step">Raisonnement étape par étape</option>
-            <option value="justification">Justifier les choix</option>
-            <option value="auto-reflexion">Auto-réflexion avant réponse</option>
+            <option value="none" data-i18n-option="reasoning_types.none">Aucun raisonnement spécifique</option>
+            <option value="step-by-step" data-i18n-option="reasoning_types.step_by_step">Raisonnement étape par étape</option>
+            <option value="justification" data-i18n-option="reasoning_types.justification">Justifier les choix</option>
+            <option value="auto-reflexion" data-i18n-option="reasoning_types.self_reflection">Auto-réflexion avant réponse</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Paramètres IA avancés</label>
+          <label class="form-label" data-i18n="advanced_ai_label">Paramètres IA avancés</label>
           <div style="margin: 8px 0;">
-            <label class="form-label text-sm">Autonomie (Eagerness)</label>
+            <label class="form-label text-sm" data-i18n="autonomy_label">Autonomie (Eagerness)</label>
             <select id="eagerness" class="form-input">
-              <option value="low">Basse - L'IA pose des questions</option>
-              <option value="medium" selected>Moyenne - Équilibrée</option>
-              <option value="high">Haute - L'IA est proactive</option>
+              <option value="low" data-i18n-option="autonomy_levels.low">Basse - L'IA pose des questions</option>
+              <option value="medium" selected data-i18n-option="autonomy_levels.medium">Moyenne - Équilibrée</option>
+              <option value="high" data-i18n-option="autonomy_levels.high">Haute - L'IA est proactive</option>
             </select>
           </div>
           <div style="margin: 8px 0;">
-            <label class="form-label text-sm">Profondeur d'analyse</label>
+            <label class="form-label text-sm" data-i18n="analysis_depth_label">Profondeur d'analyse</label>
             <select id="reasoning-effort" class="form-input">
-              <option value="low">Analyse rapide</option>
-              <option value="medium" selected>Analyse standard</option>
-              <option value="high">Analyse approfondie</option>
+              <option value="low" data-i18n-option="analysis_depths.low">Analyse rapide</option>
+              <option value="medium" selected data-i18n-option="analysis_depths.medium">Analyse standard</option>
+              <option value="high" data-i18n-option="analysis_depths.high">Analyse approfondie</option>
             </select>
           </div>
           <div style="margin: 8px 0;">
-            <label class="form-label text-sm">Verbosité</label>
+            <label class="form-label text-sm" data-i18n="verbosity_label">Verbosité</label>
             <select id="verbosity" class="form-input">
-              <option value="concise">Concise</option>
-              <option value="balanced" selected>Équilibrée</option>
-              <option value="detailed">Détaillée</option>
+              <option value="concise" data-i18n-option="verbosity_levels.concise">Concise</option>
+              <option value="balanced" selected data-i18n-option="verbosity_levels.balanced">Équilibrée</option>
+              <option value="detailed" data-i18n-option="verbosity_levels.detailed">Détaillée</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Options avancées</label>
+          <label class="form-label" data-i18n="advanced_options_label">Options avancées</label>
           <label style="display: flex; align-items: center; gap: 8px; margin: 8px 0;">
-            <input type="checkbox" id="allow-unknown"> Autoriser "Je ne sais pas"
+            <input type="checkbox" id="allow-unknown"> <span data-i18n="allow_unknown">Autoriser "Je ne sais pas"</span>
           </label>
           <label style="display: flex; align-items: center; gap: 8px; margin: 8px 0;">
-            <input type="checkbox" id="require-sources"> Exiger des sources
+            <input type="checkbox" id="require-sources"> <span data-i18n="require_sources">Exiger des sources</span>
           </label>
           <label style="display: flex; align-items: center; gap: 8px; margin: 8px 0;">
-            <input type="checkbox" id="use-xml"> Utiliser structure XML avancée
+            <input type="checkbox" id="use-xml"> <span data-i18n="use_xml">Utiliser structure XML avancée</span>
           </label>
         </div>
       </div>
@@ -965,7 +983,7 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
     <div id="library-view" class="hidden">
       <div class="header">
         <div class="header-content">
-          <h1>Bibliothèque</h1>
+          <h1 data-i18n="library_title">Bibliothèque</h1>
         </div>
         <div class="nav-buttons">
           <button class="nav-btn" data-action="go-home" title="Retour à l'accueil">
@@ -984,7 +1002,7 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
     <div id="result-view" class="hidden">
       <div class="header">
         <div class="header-content">
-          <h1>Prompt généré</h1>
+          <h1 data-i18n="result">Prompt généré</h1>
         </div>
         <div class="nav-buttons">
           <button class="nav-btn" data-action="go-step3" title="Modifier le prompt">
@@ -1007,6 +1025,6 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
     </div>
   </div>
 
-  <script type="module" src="./popup.js"></script>
+  <script src="./popup.js"></script>
 </body>
 </html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test I18n GRID Extension</title>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 20px;
+      background: #f8f9fa;
+    }
+    .test-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .language-selector {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    select {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    h1, h2 {
+      color: #212529;
+    }
+    .test-item {
+      margin: 8px 0;
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+      border-left: 3px solid #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>Test du système multilingue GRID Extension</h1>
+    
+    <div class="language-selector">
+      <label for="lang-select">Langue / Language / Sprache:</label>
+      <select id="lang-select">
+        <option value="fr">🇫🇷 Français</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="de">🇩🇪 Deutsch</option>
+      </select>
+    </div>
+
+    <div class="test-section">
+      <h2>Éléments de l'interface</h2>
+      <div class="test-item">
+        <strong>Titre de l'app:</strong> <span data-i18n="app_title">GRID - AI Prompt Builder</span>
+      </div>
+      <div class="test-item">
+        <strong>Sous-titre:</strong> <span data-i18n="app_subtitle">Création de Prompts & IA</span>
+      </div>
+      <div class="test-item">
+        <strong>Description:</strong> <span data-i18n="app_description">Outil de productivité pour créer des prompts efficaces</span>
+      </div>
+      <div class="test-item">
+        <strong>Bouton principal:</strong> <span data-i18n="start_button">Commencer</span>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Caractéristiques</h2>
+      <div class="test-item">
+        <span data-i18n="features.fast">Rapide</span> |
+        <span data-i18n="features.structured">Structuré</span> |
+        <span data-i18n="features.efficient">Efficace</span>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Navigation</h2>
+      <div class="test-item">
+        <span data-i18n="step1">Étape 1: Définir l'objectif</span>
+      </div>
+      <div class="test-item">
+        <span data-i18n="step2">Étape 2: Structurer</span>
+      </div>
+      <div class="test-item">
+        <span data-i18n="step3">Étape 3: Personnaliser</span>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Audiences</h2>
+      <div class="test-item">
+        <span data-i18n="audiences.beginner">Débutant</span> |
+        <span data-i18n="audiences.intermediate">Intermédiaire</span> |
+        <span data-i18n="audiences.expert">Expert</span>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Actions</h2>
+      <div class="test-item">
+        <button><span data-i18n="copy">Copier</span></button>
+        <button><span data-i18n="preview">Aperçu</span></button>
+        <button><span data-i18n="use">Utiliser</span></button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import du système d'internationalisation
+    import { i18n, t } from './src/utils/i18n.js';
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      const langSelect = document.getElementById('lang-select');
+      
+      // Définir la langue actuelle
+      langSelect.value = i18n.getCurrentLanguage();
+      
+      // Écouter les changements
+      langSelect.addEventListener('change', function(e) {
+        const newLang = e.target.value;
+        if (i18n.setLanguage(newLang)) {
+          console.log('Langue changée vers:', newLang);
+        }
+      });
+      
+      // Mettre à jour le DOM avec la langue actuelle
+      i18n.updateDOM();
+    });
+  </script>
+</body>
+</html>

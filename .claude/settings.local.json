@@ -15,7 +15,12 @@
       "Bash(git push)",
       "Bash(git push:*)",
       "Bash(cat:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(move:*)",
+      "Bash(copy:*)",
+      "Bash(start popup-debug.html)",
+      "Bash(start test-debug.html)",
+      "Bash(start \"C:\\Users\\Dmitr\\Documents\\GridEx\\src\\popup\\index.html\")"
     ],
     "deny": [],
     "ask": []
