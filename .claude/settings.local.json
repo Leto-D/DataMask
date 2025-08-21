@@ -21,7 +21,9 @@
       "Bash(start popup-debug.html)",
       "Bash(start test-debug.html)",
       "Bash(start \"C:\\Users\\Dmitr\\Documents\\GridEx\\src\\popup\\index.html\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npm run package:*)",
+      "Bash(powershell:*)"
     ],
     "deny": [],
     "ask": []

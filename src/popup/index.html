@@ -702,6 +702,28 @@
                 <option value="en">🇺🇸 EN</option>
                 <option value="de">🇩🇪 DE</option>
               </select>
+              <!-- Sélecteur d'IA -->
+              <select id="ai-selector" style="
+                background: var(--color-surface);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-sm);
+                padding: 6px 10px;
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--color-text-primary);
+                cursor: pointer;
+                transition: all var(--transition-fast);
+                margin-left: 8px;
+              ">
+                <option value="" data-i18n-option="ai_selector_choose">Choisir IA</option>
+                <option value="chatgpt">ChatGPT</option>
+                <option value="claude">Claude</option>
+                <option value="gemini">Gemini</option>
+                <option value="copilot">Copilot</option>
+                <option value="perplexity">Perplexity</option>
+                <option value="mistral">Mistral</option>
+                <option value="custom" data-i18n-option="ai_selector_custom">Personnaliser...</option>
+              </select>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--color-text-secondary)" style="cursor: pointer;">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
@@ -1069,11 +1091,41 @@ Output: Croissance du marché SaaS dans la santé"></textarea>
               <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
             </svg>
           </button>
+          <button class="nav-btn validate" data-action="send-to-ai" id="send-to-ai-btn" title="Envoyer vers l'IA sélectionnée" style="margin-left: 4px;">
+            <svg viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
         </div>
       </div>
       <div class="content content-full">
         <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px;">
           <pre id="generated-prompt" style="font-size: 12px; white-space: pre-wrap; margin: 0; font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;"></pre>
+        </div>
+      </div>
+    </div>
+    
+    <!-- MODAL PERSONNALISATION IA -->
+    <div id="custom-ai-modal" class="modal-overlay hidden" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 data-i18n="custom_ai_title">Personnaliser une IA</h2>
+          <button class="modal-close" data-action="close-custom-ai-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" data-i18n="custom_ai_name_label">Nom de l'IA</label>
+            <input id="custom-ai-name" class="form-input" data-i18n-placeholder="custom_ai_name_placeholder" placeholder="Ex: Mon IA personnalisée">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="custom_ai_url_label">URL de l'IA</label>
+            <input id="custom-ai-url" class="form-input" data-i18n-placeholder="custom_ai_url_placeholder" placeholder="https://monai.com/chat">
+            <p class="text-sm text-muted" data-i18n="custom_ai_url_help">URL vers laquelle rediriger (ex: https://chat.openai.com/)</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" data-action="close-custom-ai-modal" data-i18n="custom_ai_cancel">Annuler</button>
+          <button class="btn-primary" data-action="save-custom-ai" data-i18n="custom_ai_save">Sauvegarder</button>
         </div>
       </div>
     </div>

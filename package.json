@@ -1,12 +1,13 @@
 {
   "name": "grid-extension",
-  "version": "1.0.0",
-  "description": "GRID - Extension Chrome d'aide à la création de prompts pour LLM",
+  "version": "1.1.2",
+  "description": "GRID - Extension Chrome d'aide à la création de prompts pour LLM avec sélecteur d'IA intégré",
   "scripts": {
     "build": "vite build && copy manifest.json dist\\",
     "dev": "vite",
     "optimize-css": "node scripts/optimize-css.js",
-    "build-optimized": "npm run optimize-css && vite build && copy manifest.json dist\\"
+    "build-optimized": "npm run optimize-css && vite build && copy manifest.json dist\\",
+    "package": "npm run build && powershell Compress-Archive -Path dist\\* -DestinationPath GRID-Extension-v1.1.2-ChromeStore.zip -Force"
   },
   "devDependencies": {
     "vite": "^7.0.0"

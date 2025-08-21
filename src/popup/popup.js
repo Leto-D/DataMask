@@ -1270,7 +1270,8 @@ function getCategories() {
 // === ÉTAT DE L'APPLICATION ===
 const appState = {
   currentStep: 'home',
-  data: {}
+  data: {},
+  selectedAI: null
 };
 
 // === NAVIGATION ===
@@ -1394,6 +1395,393 @@ function fallbackCopy(text) {
     console.error('❌ Erreur avec la méthode fallback:', err);
   }
   document.body.removeChild(textArea);
+}
+
+// === GESTION DES IA PERSONNALISÉES ===
+function loadCustomAIs() {
+  try {
+    const saved = localStorage.getItem('grid-custom-ais');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (error) {
+    console.error('❌ Erreur lors du chargement des IA personnalisées:', error);
+  }
+  return {};
+}
+
+function saveCustomAIs(customAIs) {
+  try {
+    localStorage.setItem('grid-custom-ais', JSON.stringify(customAIs));
+    console.log('💾 IA personnalisées sauvegardées:', customAIs);
+  } catch (error) {
+    console.error('❌ Erreur lors de la sauvegarde des IA personnalisées:', error);
+  }
+}
+
+function updateAISelector() {
+  const aiSelector = document.getElementById('ai-selector');
+  if (!aiSelector) return;
+  
+  // Garder les options par défaut avec traductions
+  const defaultOptions = [
+    { value: "", key: "ai_selector_choose" },
+    { value: "chatgpt", text: "ChatGPT" },
+    { value: "claude", text: "Claude" },
+    { value: "gemini", text: "Gemini" },
+    { value: "copilot", text: "Copilot" },
+    { value: "perplexity", text: "Perplexity" },
+    { value: "mistral", text: "Mistral" }
+  ];
+  
+  // Obtenir les traductions actuelles
+  const translations = {
+    "ai_selector_choose": {
+      fr: "Choisir IA",
+      en: "Choose AI", 
+      de: "KI wählen"
+    },
+    "ai_selector_custom": {
+      fr: "Personnaliser...",
+      en: "Customize...",
+      de: "Anpassen..."
+    }
+  };
+  
+  const currentLang = i18n.currentLanguage;
+  
+  // Charger les IA personnalisées
+  const customAIs = loadCustomAIs();
+  
+  // Sauvegarder la valeur actuelle
+  const currentValue = aiSelector.value;
+  
+  // Vider le sélecteur
+  aiSelector.innerHTML = '';
+  
+  // Ajouter les options par défaut
+  defaultOptions.forEach(option => {
+    const optionEl = document.createElement('option');
+    optionEl.value = option.value;
+    if (option.key && translations[option.key]) {
+      optionEl.setAttribute('data-i18n-option', option.key);
+      optionEl.textContent = translations[option.key][currentLang] || option.text || option.key;
+    } else {
+      optionEl.textContent = option.text;
+    }
+    aiSelector.appendChild(optionEl);
+  });
+  
+  // Ajouter les IA personnalisées
+  Object.keys(customAIs).forEach(id => {
+    const ai = customAIs[id];
+    const optionEl = document.createElement('option');
+    optionEl.value = id;
+    optionEl.textContent = ai.name;
+    aiSelector.appendChild(optionEl);
+  });
+  
+  // Ajouter l'option de personnalisation
+  const customOptionEl = document.createElement('option');
+  customOptionEl.value = 'custom';
+  customOptionEl.setAttribute('data-i18n-option', 'ai_selector_custom');
+  customOptionEl.textContent = translations["ai_selector_custom"][currentLang] || "Personnaliser...";
+  aiSelector.appendChild(customOptionEl);
+  
+  // Restaurer la valeur
+  aiSelector.value = currentValue;
+}
+
+// === GESTION DU SÉLECTEUR D'IA ===
+function loadSelectedAI() {
+  try {
+    const saved = localStorage.getItem('grid-selected-ai');
+    if (saved) {
+      appState.selectedAI = saved;
+      const aiSelector = document.getElementById('ai-selector');
+      if (aiSelector) {
+        aiSelector.value = saved;
+      }
+      console.log('🤖 IA restaurée:', saved);
+      return saved;
+    }
+  } catch (error) {
+    console.error('❌ Erreur lors du chargement de l\'IA:', error);
+  }
+  return null;
+}
+
+function saveSelectedAI(aiValue) {
+  try {
+    localStorage.setItem('grid-selected-ai', aiValue);
+    appState.selectedAI = aiValue;
+    console.log('💾 IA sauvegardée:', aiValue);
+  } catch (error) {
+    console.error('❌ Erreur lors de la sauvegarde de l\'IA:', error);
+  }
+}
+
+function getAIUrls() {
+  return {
+    'chatgpt': 'https://chatgpt.com/',
+    'claude': 'https://claude.ai/chat',
+    'gemini': 'https://gemini.google.com/app',
+    'copilot': 'https://copilot.microsoft.com/',
+    'perplexity': 'https://www.perplexity.ai/',
+    'mistral': 'https://chat.mistral.ai/chat'
+  };
+}
+
+function getAIName(aiValue) {
+  const names = {
+    'chatgpt': 'ChatGPT',
+    'claude': 'Claude',
+    'gemini': 'Gemini', 
+    'copilot': 'Copilot',
+    'perplexity': 'Perplexity',
+    'mistral': 'Mistral'
+  };
+  
+  // Vérifier si c'est une IA personnalisée
+  if (!names[aiValue]) {
+    const customAIs = loadCustomAIs();
+    if (customAIs[aiValue]) {
+      return customAIs[aiValue].name;
+    }
+  }
+  
+  return names[aiValue] || 'IA sélectionnée';
+}
+
+function updateSendToAIButton() {
+  const btn = document.querySelector('[data-action="send-to-ai"]');
+  if (btn && appState.selectedAI) {
+    const aiName = getAIName(appState.selectedAI);
+    btn.title = `Vers ${aiName}`;
+    console.log('🔄 Bouton "Vers IA" mis à jour:', aiName);
+  }
+}
+
+function getAIUrlWithPrompt(aiValue, prompt) {
+  const encodedPrompt = encodeURIComponent(prompt);
+  
+  switch(aiValue) {
+    case 'chatgpt':
+      // ChatGPT supporte le paramètre q pour pré-remplir
+      return `https://chatgpt.com/?q=${encodedPrompt}`;
+    
+    case 'claude':
+      // Claude ne supporte pas le pré-remplissage par URL, utiliser l'URL normale
+      return 'https://claude.ai/chat';
+    
+    case 'gemini':
+      // Gemini ne supporte pas le pré-remplissage par URL
+      return 'https://gemini.google.com/app';
+    
+    case 'copilot':
+      // Copilot ne supporte pas le pré-remplissage par URL
+      return 'https://copilot.microsoft.com/';
+    
+    case 'perplexity':
+      // Perplexity supporte le paramètre q
+      return `https://www.perplexity.ai/?q=${encodedPrompt}`;
+    
+    case 'mistral':
+      // Mistral ne supporte pas le pré-remplissage par URL
+      return 'https://chat.mistral.ai/chat';
+    
+    default:
+      // Vérifier si c'est une IA personnalisée
+      const customAIs = loadCustomAIs();
+      if (customAIs[aiValue]) {
+        return customAIs[aiValue].url;
+      }
+      return getAIUrls()[aiValue];
+  }
+}
+
+function sendToAI() {
+  console.log('🚀 sendToAI appelée');
+  
+  if (!appState.selectedAI) {
+    alert('Veuillez d\'abord sélectionner une IA dans le menu déroulant de la page d\'accueil.');
+    return;
+  }
+  
+  const promptDisplay = document.getElementById('generated-prompt');
+  if (!promptDisplay || !promptDisplay.textContent) {
+    console.warn('⚠️ Aucun prompt à envoyer');
+    return;
+  }
+  
+  const prompt = promptDisplay.textContent;
+  const aiName = getAIName(appState.selectedAI);
+  
+  // Toujours copier dans le presse-papiers d'abord
+  const copyAndRedirect = (url) => {
+    console.log('✅ Prompt copié dans le presse-papiers pour', aiName);
+    
+    // Feedback visuel
+    const btn = document.querySelector('[data-action="send-to-ai"]');
+    if (btn) {
+      const originalBg = btn.style.background;
+      btn.style.background = 'var(--color-success)';
+      setTimeout(() => {
+        btn.style.background = originalBg;
+      }, 1500);
+    }
+    
+    // Message informatif pour les IA qui ne supportent pas le pré-remplissage
+    if (!['chatgpt', 'perplexity'].includes(appState.selectedAI)) {
+      console.log('ℹ️ Le prompt a été copié - vous pouvez le coller dans', aiName);
+    }
+    
+    // Rediriger vers l'IA
+    setTimeout(() => {
+      chrome.tabs.create({ url: url });
+    }, 500);
+  };
+  
+  try {
+    // Générer l'URL avec ou sans pré-remplissage
+    const targetUrl = getAIUrlWithPrompt(appState.selectedAI, prompt);
+    
+    // Copier le prompt dans le presse-papiers
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(prompt).then(() => {
+        copyAndRedirect(targetUrl);
+      }).catch(err => {
+        console.error('❌ Erreur lors de la copie (clipboard API):', err);
+        // Utiliser la méthode fallback
+        fallbackCopyAndRedirect(prompt, targetUrl);
+      });
+    } else {
+      // Utiliser la méthode fallback si clipboard API n'est pas disponible
+      fallbackCopyAndRedirect(prompt, targetUrl);
+    }
+    
+  } catch (err) {
+    console.error('❌ Erreur générale:', err);
+    // En cas d'erreur, au moins ouvrir l'IA
+    chrome.tabs.create({ url: getAIUrls()[appState.selectedAI] });
+  }
+}
+
+function fallbackCopyAndRedirect(text, url) {
+  // Méthode de fallback pour copier
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  
+  try {
+    document.execCommand('copy');
+    console.log('✅ Prompt copié avec la méthode fallback');
+    
+    // Feedback visuel
+    const btn = document.querySelector('[data-action="send-to-ai"]');
+    if (btn) {
+      const originalBg = btn.style.background;
+      btn.style.background = 'var(--color-success)';
+      setTimeout(() => {
+        btn.style.background = originalBg;
+      }, 1500);
+    }
+    
+  } catch (err) {
+    console.error('❌ Erreur avec la méthode fallback:', err);
+  }
+  
+  document.body.removeChild(textArea);
+  
+  // Rediriger vers l'IA
+  setTimeout(() => {
+    chrome.tabs.create({ url: url });
+  }, 500);
+}
+
+// === GESTION DE LA MODAL PERSONNALISATION IA ===
+function showCustomAIModal() {
+  const modal = document.getElementById('custom-ai-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+    
+    // Focus sur le champ nom
+    const nameInput = document.getElementById('custom-ai-name');
+    if (nameInput) {
+      setTimeout(() => nameInput.focus(), 100);
+    }
+  }
+}
+
+function hideCustomAIModal() {
+  const modal = document.getElementById('custom-ai-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+    
+    // Nettoyer les champs
+    const nameInput = document.getElementById('custom-ai-name');
+    const urlInput = document.getElementById('custom-ai-url');
+    if (nameInput) nameInput.value = '';
+    if (urlInput) urlInput.value = '';
+  }
+}
+
+function saveCustomAI() {
+  const nameInput = document.getElementById('custom-ai-name');
+  const urlInput = document.getElementById('custom-ai-url');
+  
+  if (!nameInput || !urlInput) {
+    console.error('❌ Champs de la modal non trouvés');
+    return;
+  }
+  
+  const name = nameInput.value.trim();
+  const url = urlInput.value.trim();
+  
+  if (!name || !url) {
+    alert('Veuillez remplir tous les champs');
+    return;
+  }
+  
+  // Valider l'URL
+  try {
+    new URL(url);
+  } catch (e) {
+    alert('Veuillez entrer une URL valide (ex: https://example.com)');
+    return;
+  }
+  
+  // Générer un ID unique
+  const id = 'custom_' + Date.now();
+  
+  // Charger les IA existantes
+  const customAIs = loadCustomAIs();
+  
+  // Ajouter la nouvelle IA
+  customAIs[id] = { name, url };
+  
+  // Sauvegarder
+  saveCustomAIs(customAIs);
+  
+  // Mettre à jour le sélecteur
+  updateAISelector();
+  
+  // Sélectionner automatiquement la nouvelle IA
+  const aiSelector = document.getElementById('ai-selector');
+  if (aiSelector) {
+    aiSelector.value = id;
+    saveSelectedAI(id);
+    updateSendToAIButton();
+  }
+  
+  // Fermer la modal
+  hideCustomAIModal();
+  
+  console.log('✅ IA personnalisée ajoutée:', name, url);
 }
 
 // === COLLECTE DE DONNÉES DES ÉTAPES ===
@@ -1917,6 +2305,77 @@ function showTemplateDetails(template) {
   copyTemplateToClipboard(template.prompt);
 }
 
+// === FONCTION DE TRADUCTION AMÉLIORÉE ===
+function updateTranslations() {
+  // Définir les traductions localement
+  const localTranslations = {
+    fr: {
+      ai_selector_choose: "Choisir IA",
+      ai_selector_custom: "Personnaliser...",
+      custom_ai_title: "Personnaliser une IA",
+      custom_ai_name_label: "Nom de l'IA",
+      custom_ai_name_placeholder: "Ex: Mon IA personnalisée",
+      custom_ai_url_label: "URL de l'IA",
+      custom_ai_url_placeholder: "https://monai.com/chat",
+      custom_ai_url_help: "URL vers laquelle rediriger (ex: https://chat.openai.com/)",
+      custom_ai_cancel: "Annuler",
+      custom_ai_save: "Sauvegarder"
+    },
+    en: {
+      ai_selector_choose: "Choose AI",
+      ai_selector_custom: "Customize...",
+      custom_ai_title: "Customize an AI",
+      custom_ai_name_label: "AI Name",
+      custom_ai_name_placeholder: "Ex: My custom AI",
+      custom_ai_url_label: "AI URL",
+      custom_ai_url_placeholder: "https://myai.com/chat",
+      custom_ai_url_help: "URL to redirect to (ex: https://chat.openai.com/)",
+      custom_ai_cancel: "Cancel",
+      custom_ai_save: "Save"
+    },
+    de: {
+      ai_selector_choose: "KI wählen",
+      ai_selector_custom: "Anpassen...",
+      custom_ai_title: "KI anpassen",
+      custom_ai_name_label: "KI-Name",
+      custom_ai_name_placeholder: "Z.B.: Meine benutzerdefinierte KI",
+      custom_ai_url_label: "KI-URL",
+      custom_ai_url_placeholder: "https://meineKI.com/chat",
+      custom_ai_url_help: "URL zur Weiterleitung (z.B.: https://chat.openai.com/)",
+      custom_ai_cancel: "Abbrechen",
+      custom_ai_save: "Speichern"
+    }
+  };
+  
+  const currentLang = i18n.currentLanguage;
+  const currentTranslations = localTranslations[currentLang] || localTranslations.fr;
+  
+  // Mettre à jour tous les éléments avec data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    let translation = currentTranslations[key] || i18n.t(key);
+    
+    if (element.closest('button') && element.closest('button').querySelector('svg')) {
+      return; // Ne pas écraser les boutons avec SVG
+    }
+    element.textContent = translation;
+  });
+
+  // Mettre à jour tous les éléments avec data-i18n-option
+  document.querySelectorAll('[data-i18n-option]').forEach(element => {
+    const key = element.getAttribute('data-i18n-option');
+    let translation = currentTranslations[key] || i18n.t(key);
+    element.textContent = translation;
+  });
+
+  // Mettre à jour tous les placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    const key = element.getAttribute('data-i18n-placeholder');
+    let translation = currentTranslations[key] || i18n.t(key);
+    element.placeholder = translation;
+  });
+}
+
 // === INITIALISATION ===
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🚀 DOM loaded, initializing GRID extension...');
@@ -1936,12 +2395,43 @@ document.addEventListener('DOMContentLoaded', function() {
       languageSelector.addEventListener('change', function(e) {
         console.log('🌍 Changement de langue:', e.target.value);
         i18n.setLanguage(e.target.value);
+        // Mettre à jour toutes les traductions
+        updateTranslations();
+        // Mettre à jour le sélecteur d'IA pour les traductions
+        updateAISelector();
       });
       console.log('  ✅ Sélecteur de langue configuré');
     }
     
+    // === SÉLECTEUR D'IA ===
+    const aiSelector = document.getElementById('ai-selector');
+    if (aiSelector) {
+      // Initialiser le sélecteur avec les IA personnalisées
+      updateAISelector();
+      
+      // Charger l'IA précédemment sélectionnée
+      loadSelectedAI();
+      
+      aiSelector.addEventListener('change', function(e) {
+        const selectedAI = e.target.value;
+        console.log('🤖 Changement d\'IA:', selectedAI);
+        
+        if (selectedAI === 'custom') {
+          // Ouvrir la modal de personnalisation
+          showCustomAIModal();
+          // Remettre la valeur précédente
+          e.target.value = appState.selectedAI || '';
+        } else if (selectedAI) {
+          saveSelectedAI(selectedAI);
+          // Mettre à jour le titre du bouton "Vers IA"
+          updateSendToAIButton();
+        }
+      });
+      console.log('  ✅ Sélecteur d\'IA configuré');
+    }
+    
     // Appliquer les traductions
-    i18n.updateDOM();
+    updateTranslations();
     
     // === EVENT LISTENERS POUR LES SUGGESTIONS ===
     attachSuggestionListeners();
@@ -1979,7 +2469,10 @@ document.addEventListener('DOMContentLoaded', function() {
       { action: 'go-step2', func: goToStep2 },
       { action: 'go-step3', func: goToStep3 },
       { action: 'generate-prompt', func: generatePrompt },
-      { action: 'copy-prompt', func: copyPrompt }
+      { action: 'copy-prompt', func: copyPrompt },
+      { action: 'send-to-ai', func: sendToAI },
+      { action: 'close-custom-ai-modal', func: hideCustomAIModal },
+      { action: 'save-custom-ai', func: saveCustomAI }
     ];
     
     navigationActions.forEach(({action, func}) => {
@@ -2015,6 +2508,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Re-valider les champs restaurés
         validator.validateAllFields();
       }
+      // Mettre à jour le bouton "Vers IA" si une IA est déjà sélectionnée
+      updateSendToAIButton();
     }, 1000);
     
     console.log('✅ GRID extension initialized successfully');

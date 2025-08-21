@@ -186,6 +186,20 @@ export const translations = {
     require_sources: "Exiger des sources",
     use_xml: "Utiliser structure XML avancée",
     
+    // Sélecteur d'IA
+    ai_selector_choose: "Choisir IA",
+    ai_selector_custom: "Personnaliser...",
+    
+    // Modal personnalisation IA
+    custom_ai_title: "Personnaliser une IA",
+    custom_ai_name_label: "Nom de l'IA",
+    custom_ai_name_placeholder: "Ex: Mon IA personnalisée",
+    custom_ai_url_label: "URL de l'IA",
+    custom_ai_url_placeholder: "https://monai.com/chat",
+    custom_ai_url_help: "URL vers laquelle rediriger (ex: https://chat.openai.com/)",
+    custom_ai_cancel: "Annuler",
+    custom_ai_save: "Sauvegarder",
+    
     // Pied de page
     footer: "© 2025 GRID - AI Prompt Builder (By LetoD)"
   },
@@ -373,6 +387,20 @@ export const translations = {
     allow_unknown: "Allow \"I don't know\"",
     require_sources: "Require sources",
     use_xml: "Use advanced XML structure",
+    
+    // AI Selector
+    ai_selector_choose: "Choose AI",
+    ai_selector_custom: "Customize...",
+    
+    // Custom AI Modal
+    custom_ai_title: "Customize an AI",
+    custom_ai_name_label: "AI Name",
+    custom_ai_name_placeholder: "Ex: My custom AI",
+    custom_ai_url_label: "AI URL",
+    custom_ai_url_placeholder: "https://myai.com/chat",
+    custom_ai_url_help: "URL to redirect to (ex: https://chat.openai.com/)",
+    custom_ai_cancel: "Cancel",
+    custom_ai_save: "Save",
     
     // Footer
     footer: "© 2025 GRID - AI Prompt Builder (By LetoD)"
@@ -562,6 +590,20 @@ export const translations = {
     require_sources: "Quellen erforderlich",
     use_xml: "Erweiterte XML-Struktur verwenden",
     
+    // KI-Selektor
+    ai_selector_choose: "KI wählen",
+    ai_selector_custom: "Anpassen...",
+    
+    // Modal KI-Anpassung
+    custom_ai_title: "KI anpassen",
+    custom_ai_name_label: "KI-Name",
+    custom_ai_name_placeholder: "Z.B.: Meine benutzerdefinierte KI",
+    custom_ai_url_label: "KI-URL",
+    custom_ai_url_placeholder: "https://meineKI.com/chat",
+    custom_ai_url_help: "URL zur Weiterleitung (z.B.: https://chat.openai.com/)",
+    custom_ai_cancel: "Abbrechen",
+    custom_ai_save: "Speichern",
+    
     // Fußzeile
     footer: "© 2025 GRID - AI Prompt Builder (By LetoD)"
   }
@@ -690,6 +732,17 @@ export class I18n {
     const roleSelect = document.getElementById('role');
     if (roleSelect) {
       Array.from(roleSelect.options).forEach(option => {
+        const key = option.getAttribute('data-i18n-option');
+        if (key) {
+          option.textContent = this.t(key);
+        }
+      });
+    }
+    
+    // Sélecteur d'IA
+    const aiSelect = document.getElementById('ai-selector');
+    if (aiSelect) {
+      Array.from(aiSelect.options).forEach(option => {
         const key = option.getAttribute('data-i18n-option');
         if (key) {
           option.textContent = this.t(key);
