@@ -20,7 +20,8 @@
       "Bash(copy:*)",
       "Bash(start popup-debug.html)",
       "Bash(start test-debug.html)",
-      "Bash(start \"C:\\Users\\Dmitr\\Documents\\GridEx\\src\\popup\\index.html\")"
+      "Bash(start \"C:\\Users\\Dmitr\\Documents\\GridEx\\src\\popup\\index.html\")",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

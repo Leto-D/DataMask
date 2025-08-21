@@ -14,6 +14,8 @@
       --color-accent: #FFC107;              /* Accents jaune : jaune solaire */
       --color-accent-light: #FFD54F;        /* Jaune doux */
       --color-accent-dark: #FFB300;         /* Jaune foncé hover */
+      --color-success: #10B981;             /* Vert succès pour boutons de validation */
+      --color-success-dark: #059669;        /* Vert succès hover */
       --color-border: #E9ECEF;              /* Bordures : gris très clair */
       --color-surface: #FFFFFF;             /* Surface des cartes : blanc */
       --color-surface-dark: #212529;        /* Surface sombre pour bibliothèque */
@@ -102,6 +104,7 @@
       transition: all var(--transition-fast);
       position: relative;
       overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
     .nav-btn:hover {
@@ -139,10 +142,20 @@
     
     .nav-btn.validate {
       background: var(--color-success);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+      transform: none;
+      font-weight: 600;
     }
     
     .nav-btn.validate:hover {
-      background: #059669;
+      background: var(--color-success-dark);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      transform: translateY(-2px) scale(1.05);
+    }
+    
+    .nav-btn.validate:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
     }
     
     .progress-bar {
@@ -281,6 +294,47 @@
     
     .form-input::placeholder, .form-textarea::placeholder {
       color: var(--color-text-secondary);         /* Placeholder : Gris clair */
+    }
+    
+    /* === VALIDATION TEMPS RÉEL === */
+    .form-input.valid, .form-textarea.valid {
+      border-color: var(--color-success);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+    
+    .form-input.error, .form-textarea.error {
+      border-color: #EF4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+    
+    .validation-error {
+      color: #EF4444;
+      font-size: 12px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .validation-error::before {
+      content: '⚠️';
+      font-size: 10px;
+    }
+    
+    .char-counter {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+      text-align: right;
+    }
+    
+    .char-counter.valid {
+      color: var(--color-success);
+    }
+    
+    .char-counter.valid::after {
+      content: ' ✓';
+      color: var(--color-success);
     }
     
     /* === CONTENT SANS BOUTONS BAS === */

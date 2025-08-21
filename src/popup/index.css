@@ -9,6 +9,8 @@
   --color-accent: #FFC107;              /* Accents jaune : jaune solaire */
   --color-accent-light: #FFD54F;        /* Jaune doux */
   --color-accent-dark: #FFB300;         /* Jaune foncé hover */
+  --color-success: #10B981;             /* Vert succès pour boutons de validation */
+  --color-success-dark: #059669;        /* Vert succès hover */
   --color-border: #E9ECEF;              /* Bordures : gris très clair */
   --color-surface: #FFFFFF;             /* Surface des cartes : blanc */
   --color-surface-dark: #212529;        /* Surface sombre pour bibliothèque */
@@ -143,16 +145,10 @@ p {
 .nav-btn {
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-md);
   background: var(--color-text-primary);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav-btn:hover {
@@ -188,15 +184,24 @@ p {
 }
 
 .nav-btn.validate {
-  background: var(--color-accent);
+  background: var(--color-success);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  font-weight: 600;
 }
 
 .nav-btn.validate:hover {
-  background: var(--color-accent-dark);
+  background: var(--color-success-dark);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.nav-btn.validate:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .nav-btn.validate svg {
-  fill: var(--color-text-primary);
+  fill: white;
 }
 
 /* === PROGRESS BAR === */
@@ -354,9 +359,7 @@ p {
   padding: 12px 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 400;
-  font-family: 'Inter', sans-serif;
+  font: 400 14px/1.5 'Inter', sans-serif;
   background: var(--color-surface);
   color: var(--color-text-primary);
   transition: all var(--transition-fast);
@@ -384,6 +387,47 @@ select.form-input {
 
 .form-input::placeholder, .form-textarea::placeholder {
   color: var(--color-text-secondary);
+}
+
+/* === VALIDATION TEMPS RÉEL === */
+.form-input.valid, .form-textarea.valid {
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-input.error, .form-textarea.error {
+  border-color: #EF4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.validation-error {
+  color: #EF4444;
+  font-size: 12px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.validation-error::before {
+  content: '⚠️';
+  font-size: 10px;
+}
+
+.char-counter {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+  text-align: right;
+}
+
+.char-counter.valid {
+  color: var(--color-success);
+}
+
+.char-counter.valid::after {
+  content: ' ✓';
+  color: var(--color-success);
 }
 
 /* === SUGGESTIONS === */
@@ -431,11 +475,9 @@ input[type="checkbox"]:checked {
 }
 
 /* === BOUTONS MODERNES === */
-.btn-primary, .btn-secondary {
-  padding: 12px 24px;
+.btn-primary, .btn-secondary, .nav-btn {
   border-radius: var(--radius-md);
   font-family: 'Inter', sans-serif;
-  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -443,6 +485,11 @@ input[type="checkbox"]:checked {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 12px 24px;
+  font-size: 14px;
   gap: 8px;
 }
 

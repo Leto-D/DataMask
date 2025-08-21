@@ -4,7 +4,9 @@
   "description": "GRID - Extension Chrome d'aide à la création de prompts pour LLM",
   "scripts": {
     "build": "vite build && copy manifest.json dist\\",
-    "dev": "vite"
+    "dev": "vite",
+    "optimize-css": "node scripts/optimize-css.js",
+    "build-optimized": "npm run optimize-css && vite build && copy manifest.json dist\\"
   },
   "devDependencies": {
     "vite": "^7.0.0"

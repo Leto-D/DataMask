@@ -1,6 +1,568 @@
 // GRID Extension - Popup Script (Version simplifiée qui marche)
 console.log('🚀 GRID Extension popup script loaded');
 
+// === SYSTÈME DE SAUVEGARDE AUTOMATIQUE ===
+class AutoSave {
+  constructor() {
+    this.saveInterval = 30000; // 30 secondes
+    this.storageKey = 'grid_autosave_draft';
+    this.lastSaveTime = 0;
+    this.isDirty = false;
+  }
+  
+  // Collecter toutes les données du formulaire
+  collectFormData() {
+    const formData = {};
+    
+    // Collecter tous les inputs et textareas
+    document.querySelectorAll('input, textarea, select').forEach(element => {
+      if (element.id && (element.value || element.checked)) {
+        formData[element.id] = element.type === 'checkbox' ? element.checked : element.value;
+      }
+    });
+    
+    return {
+      data: formData,
+      timestamp: Date.now(),
+      version: '1.0.3'
+    };
+  }
+  
+  // Sauvegarder les données
+  saveToStorage() {
+    if (!this.isDirty) return;
+    
+    try {
+      const formData = this.collectFormData();
+      localStorage.setItem(this.storageKey, JSON.stringify(formData));
+      this.lastSaveTime = Date.now();
+      this.isDirty = false;
+      console.log('💾 Auto-save: données sauvegardées');
+    } catch (error) {
+      console.error('❌ Erreur auto-save:', error);
+    }
+  }
+  
+  // Récupérer les données sauvegardées
+  restoreFromStorage() {
+    try {
+      const saved = localStorage.getItem(this.storageKey);
+      if (!saved) return null;
+      
+      const parsedData = JSON.parse(saved);
+      const timeDiff = Date.now() - parsedData.timestamp;
+      
+      // Ignorer les sauvegardes de plus de 24h
+      if (timeDiff > 24 * 60 * 60 * 1000) {
+        this.clearSave();
+        return null;
+      }
+      
+      return parsedData;
+    } catch (error) {
+      console.error('❌ Erreur restore auto-save:', error);
+      this.clearSave();
+      return null;
+    }
+  }
+  
+  // Restaurer les champs du formulaire
+  restoreFormFields() {
+    const savedData = this.restoreFromStorage();
+    if (!savedData || !savedData.data) return false;
+    
+    let restored = 0;
+    Object.entries(savedData.data).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) {
+        if (element.type === 'checkbox') {
+          element.checked = value;
+        } else {
+          element.value = value;
+        }
+        restored++;
+      }
+    });
+    
+    if (restored > 0) {
+      console.log(`🔄 Auto-save: ${restored} champs restaurés`);
+      return true;
+    }
+    return false;
+  }
+  
+  // Nettoyer la sauvegarde
+  clearSave() {
+    localStorage.removeItem(this.storageKey);
+    console.log('🧹 Auto-save: sauvegarde nettoyée');
+  }
+  
+  // Marquer comme modifié
+  markDirty() {
+    this.isDirty = true;
+  }
+  
+  // Initialiser le système
+  init() {
+    // Démarrer l'intervalle de sauvegarde
+    setInterval(() => {
+      this.saveToStorage();
+    }, this.saveInterval);
+    
+    // Écouter les changements sur tous les champs
+    document.addEventListener('input', () => {
+      this.markDirty();
+    });
+    
+    document.addEventListener('change', () => {
+      this.markDirty();
+    });
+    
+    console.log('💾 Auto-save system initialized');
+  }
+}
+
+// Créer l'instance globale
+const autoSave = new AutoSave();
+
+// === SYSTÈME DE VALIDATION TEMPS RÉEL ===
+class RealTimeValidator {
+  constructor() {
+    this.rules = {
+      'objective': { 
+        minLength: 20, 
+        required: true,
+        message: 'Minimum 20 caractères pour décrire précisément votre objectif'
+      },
+      'context': { 
+        minLength: 10, 
+        required: false,
+        message: 'Minimum 10 caractères pour le contexte'
+      },
+      'instructions': { 
+        minLength: 5, 
+        required: false,
+        message: 'Minimum 5 caractères'
+      },
+      'success-criteria': { 
+        minLength: 10, 
+        required: false,
+        message: 'Décrivez vos critères de succès (min. 10 caractères)'
+      },
+      'role-custom': { 
+        minLength: 10, 
+        required: false,
+        message: 'Décrivez le rôle personnalisé (min. 10 caractères)'
+      },
+      'skills': { 
+        minLength: 5, 
+        required: false,
+        message: 'Minimum 5 caractères pour les compétences'
+      },
+      'examples': { 
+        minLength: 20, 
+        required: false,
+        message: 'Ajoutez des exemples détaillés (min. 20 caractères)'
+      }
+    };
+  }
+  
+  // Valider un champ selon ses règles
+  validateField(fieldId, value) {
+    const rule = this.rules[fieldId];
+    if (!rule) return { isValid: true };
+    
+    const isValid = this.checkRule(rule, value);
+    const message = isValid ? '' : rule.message;
+    
+    return { isValid, message, rule };
+  }
+  
+  // Vérifier une règle
+  checkRule(rule, value) {
+    if (rule.required && !value.trim()) return false;
+    if (rule.minLength && value.trim().length < rule.minLength) return false;
+    return true;
+  }
+  
+  // Afficher le feedback visuel
+  showFeedback(fieldId, validation) {
+    const field = document.getElementById(fieldId);
+    const container = field?.closest('.form-group');
+    if (!field || !container) return;
+    
+    // Nettoyer les anciens feedbacks
+    this.clearFieldFeedback(container);
+    
+    // Appliquer les styles
+    if (validation.isValid) {
+      field.classList.remove('error');
+      field.classList.add('valid');
+    } else {
+      field.classList.remove('valid');
+      field.classList.add('error');
+      
+      // Ajouter le message d'erreur
+      this.showErrorMessage(container, validation.message);
+    }
+    
+    // Ajouter un compteur de caractères si pertinent
+    if (validation.rule && validation.rule.minLength) {
+      this.showCharacterCount(container, field.value.length, validation.rule.minLength);
+    }
+  }
+  
+  // Nettoyer le feedback d'un champ
+  clearFieldFeedback(container) {
+    const existingError = container.querySelector('.validation-error');
+    const existingCounter = container.querySelector('.char-counter');
+    if (existingError) existingError.remove();
+    if (existingCounter) existingCounter.remove();
+  }
+  
+  // Afficher un message d'erreur
+  showErrorMessage(container, message) {
+    const errorEl = document.createElement('div');
+    errorEl.className = 'validation-error';
+    errorEl.textContent = message;
+    container.appendChild(errorEl);
+  }
+  
+  // Afficher un compteur de caractères
+  showCharacterCount(container, currentLength, minLength) {
+    const counterEl = document.createElement('div');
+    counterEl.className = 'char-counter';
+    const isValid = currentLength >= minLength;
+    counterEl.textContent = `${currentLength}/${minLength} caractères`;
+    counterEl.classList.toggle('valid', isValid);
+    container.appendChild(counterEl);
+  }
+  
+  // Valider tous les champs visibles
+  validateAllFields() {
+    let isFormValid = true;
+    
+    Object.keys(this.rules).forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (field && field.offsetParent !== null) { // Champ visible
+        const validation = this.validateField(fieldId, field.value || '');
+        this.showFeedback(fieldId, validation);
+        if (!validation.isValid && this.rules[fieldId].required) {
+          isFormValid = false;
+        }
+      }
+    });
+    
+    return isFormValid;
+  }
+  
+  // Initialiser la validation
+  init() {
+    // Écouter les changements sur tous les champs avec validation
+    Object.keys(this.rules).forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (field) {
+        // Validation au fur et à mesure de la saisie (debounced)
+        let timeout;
+        field.addEventListener('input', () => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            const validation = this.validateField(fieldId, field.value);
+            this.showFeedback(fieldId, validation);
+          }, 500); // 500ms de délai
+        });
+        
+        // Validation immédiate à la perte de focus
+        field.addEventListener('blur', () => {
+          const validation = this.validateField(fieldId, field.value);
+          this.showFeedback(fieldId, validation);
+        });
+      }
+    });
+    
+    console.log('✅ Real-time validation initialized');
+  }
+}
+
+// Créer l'instance globale
+const validator = new RealTimeValidator();
+
+// === SUPPORT CLAVIER BASIQUE ===
+class KeyboardSupport {
+  constructor() {
+    this.focusableSelectors = [
+      'input:not([disabled]):not([type="hidden"])',
+      'textarea:not([disabled])',
+      'select:not([disabled])',
+      'button:not([disabled])',
+      '[data-action]:not([disabled])',
+      '[tabindex]:not([tabindex="-1"]):not([disabled])'
+    ];
+  }
+  
+  // Obtenir tous les éléments focusables visibles
+  getFocusableElements() {
+    const selector = this.focusableSelectors.join(',');
+    const elements = Array.from(document.querySelectorAll(selector));
+    
+    // Filtrer les éléments visibles
+    return elements.filter(el => {
+      return el.offsetParent !== null && 
+             !el.hasAttribute('hidden') && 
+             getComputedStyle(el).visibility !== 'hidden';
+    });
+  }
+  
+  // Définir l'ordre de tabulation logique
+  setTabOrder() {
+    const elements = this.getFocusableElements();
+    
+    elements.forEach((el, index) => {
+      // Ordre logique basé sur la position dans le DOM et la vue actuelle
+      if (!el.hasAttribute('tabindex') || el.getAttribute('tabindex') === '0') {
+        el.setAttribute('tabindex', (index + 1).toString());
+      }
+    });
+  }
+  
+  // Navigation au clavier
+  handleKeyNavigation(event) {
+    const { key, ctrlKey, metaKey, shiftKey } = event;
+    
+    switch(key) {
+      case 'Escape':
+        this.handleEscape(event);
+        break;
+        
+      case 'Enter':
+        this.handleEnter(event);
+        break;
+        
+      case 'Tab':
+        this.handleTab(event);
+        break;
+        
+      case 'F1':
+        this.showKeyboardHelp(event);
+        break;
+    }
+    
+    // Raccourcis avec Ctrl/Cmd
+    if (ctrlKey || metaKey) {
+      switch(key) {
+        case 's':
+          event.preventDefault();
+          this.saveCurrentStep();
+          break;
+          
+        case 'Enter':
+          event.preventDefault();
+          this.triggerPrimaryAction();
+          break;
+      }
+    }
+  }
+  
+  // Gérer la touche Escape
+  handleEscape(event) {
+    const activeModal = document.querySelector('.modal-overlay');
+    if (activeModal) {
+      // Fermer la modal
+      activeModal.style.display = 'none';
+      return;
+    }
+    
+    // Aller à la vue précédente ou accueil
+    const currentView = document.querySelector('.view:not(.hidden)');
+    if (currentView) {
+      const viewId = currentView.id;
+      
+      switch(viewId) {
+        case 'step1-view':
+        case 'step2-view':
+        case 'step3-view':
+        case 'library-view':
+          goHome();
+          break;
+        case 'result-view':
+          // Retour à l'étape précédente
+          goToStep3();
+          break;
+      }
+    }
+  }
+  
+  // Gérer la touche Entrée
+  handleEnter(event) {
+    const target = event.target;
+    
+    // Si c'est un bouton, le déclencher
+    if (target.tagName === 'BUTTON' || target.hasAttribute('data-action')) {
+      event.preventDefault();
+      target.click();
+      return;
+    }
+    
+    // Si c'est dans un textarea, comportement normal
+    if (target.tagName === 'TEXTAREA') {
+      return;
+    }
+    
+    // Dans un input, aller au champ suivant ou déclencher l'action principale
+    if (target.tagName === 'INPUT') {
+      event.preventDefault();
+      this.focusNextElement() || this.triggerPrimaryAction();
+    }
+  }
+  
+  // Gérer la navigation Tab personnalisée
+  handleTab(event) {
+    const focusableElements = this.getFocusableElements();
+    const currentIndex = focusableElements.indexOf(document.activeElement);
+    
+    if (currentIndex === -1) return;
+    
+    let nextIndex;
+    if (event.shiftKey) {
+      // Shift+Tab : élément précédent
+      nextIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
+    } else {
+      // Tab : élément suivant
+      nextIndex = currentIndex < focusableElements.length - 1 ? currentIndex + 1 : 0;
+    }
+    
+    event.preventDefault();
+    focusableElements[nextIndex].focus();
+  }
+  
+  // Passer au prochain élément focusable
+  focusNextElement() {
+    const focusableElements = this.getFocusableElements();
+    const currentIndex = focusableElements.indexOf(document.activeElement);
+    
+    if (currentIndex >= 0 && currentIndex < focusableElements.length - 1) {
+      focusableElements[currentIndex + 1].focus();
+      return true;
+    }
+    return false;
+  }
+  
+  // Déclencher l'action principale de la vue courante
+  triggerPrimaryAction() {
+    const currentView = document.querySelector('.view:not(.hidden)');
+    if (!currentView) return;
+    
+    const viewId = currentView.id;
+    
+    // Trouver le bouton principal de la vue
+    let primaryButton;
+    switch(viewId) {
+      case 'home-view':
+        primaryButton = document.querySelector('[data-action="start-builder"]');
+        break;
+      case 'step1-view':
+        primaryButton = document.querySelector('[data-action="go-step2"]');
+        break;
+      case 'step2-view':
+        primaryButton = document.querySelector('[data-action="go-step3"]');
+        break;
+      case 'step3-view':
+        primaryButton = document.querySelector('[data-action="generate-prompt"]');
+        break;
+      case 'result-view':
+        primaryButton = document.querySelector('[data-action="copy-prompt"]');
+        break;
+    }
+    
+    if (primaryButton) {
+      primaryButton.click();
+    }
+  }
+  
+  // Sauvegarder l'étape courante
+  saveCurrentStep() {
+    autoSave.saveToStorage();
+    console.log('💾 Sauvegarde manuelle (Ctrl+S)');
+  }
+  
+  // Afficher l'aide clavier
+  showKeyboardHelp(event) {
+    event.preventDefault();
+    
+    const helpText = `
+🎹 RACCOURCIS CLAVIER GRID:
+
+Navigation:
+• Tab / Shift+Tab : Navigation entre champs
+• Enter : Action principale / Champ suivant
+• Escape : Retour / Fermer modal
+
+Actions:
+• Ctrl+Enter : Action principale de la vue
+• Ctrl+S : Sauvegarde manuelle
+• F1 : Cette aide
+
+Vous êtes dans l'étape courante. Utilisez Tab pour naviguer!
+    `;
+    
+    alert(helpText.trim());
+  }
+  
+  // Améliorer l'indicateur de focus
+  enhanceFocusVisibility() {
+    const style = document.createElement('style');
+    style.textContent = `
+      *:focus {
+        outline: 2px solid var(--color-accent) !important;
+        outline-offset: 2px !important;
+      }
+      
+      .nav-btn:focus {
+        outline: 2px solid white !important;
+        outline-offset: 2px !important;
+      }
+      
+      .nav-btn.validate:focus {
+        outline: 2px solid var(--color-success-dark) !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  // Initialiser le support clavier
+  init() {
+    // Écouter les événements clavier globaux
+    document.addEventListener('keydown', (event) => {
+      this.handleKeyNavigation(event);
+    });
+    
+    // Améliorer la visibilité du focus
+    this.enhanceFocusVisibility();
+    
+    // Mettre à jour l'ordre de tabulation quand la vue change
+    const observer = new MutationObserver(() => {
+      setTimeout(() => this.setTabOrder(), 100);
+    });
+    
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class', 'hidden'],
+      subtree: true
+    });
+    
+    console.log('⌨️ Keyboard support initialized');
+    console.log('  • Tab/Shift+Tab: Navigation');
+    console.log('  • Enter: Action principale');
+    console.log('  • Escape: Retour');
+    console.log('  • Ctrl+Enter: Action rapide');
+    console.log('  • Ctrl+S: Sauvegarde');
+    console.log('  • F1: Aide');
+  }
+}
+
+// Créer l'instance globale
+const keyboardSupport = new KeyboardSupport();
+
 // === SYSTÈME I18N INTÉGRÉ ===
 const translations = {
   fr: {
@@ -782,6 +1344,9 @@ function generatePrompt() {
     promptDisplay.textContent = generatedPrompt;
   }
   
+  // Nettoyer l'auto-save car le prompt a été généré avec succès
+  autoSave.clearSave();
+  
   showView('result-view');
 }
 
@@ -1433,6 +1998,25 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
+    // Initialiser l'auto-save
+    autoSave.init();
+    
+    // Initialiser la validation temps réel
+    validator.init();
+    
+    // Initialiser le support clavier
+    keyboardSupport.init();
+    
+    // Tenter de restaurer une session précédente
+    setTimeout(() => {
+      const restored = autoSave.restoreFormFields();
+      if (restored) {
+        console.log('🔄 Session précédente restaurée');
+        // Re-valider les champs restaurés
+        validator.validateAllFields();
+      }
+    }, 1000);
+    
     console.log('✅ GRID extension initialized successfully');
     
   } catch (error) {
@@ -1450,6 +2034,9 @@ window.debugGrid = {
   goToStep3,
   showLibrary,
   generatePrompt,
+  autoSave,
+  validator,
+  keyboardSupport,
   test: () => {
     console.log('🧪 Test manuel lancé');
     startBuilder();
