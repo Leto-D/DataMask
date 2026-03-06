@@ -1,10 +1,10 @@
 # Product Hunt Launch Plan
 
 ## Tagline
-Your AI chats are leaking data. GRID fixes that — 100% locally.
+Your AI chats are leaking data. DataMask fixes that — 100% locally.
 
 ## Description
-GRID is a Chrome extension that automatically pseudonymizes sensitive data (emails, names, IBANs, phone numbers) when you paste into ChatGPT, Claude, Gemini and 3 other AI chatbots.
+DataMask is a Chrome extension that automatically pseudonymizes sensitive data (emails, names, IBANs, phone numbers) when you paste into ChatGPT, Claude, Gemini and 3 other AI chatbots.
 
 Zero servers. Zero cloud. Everything runs in your browser.
 
@@ -18,11 +18,11 @@ It also includes a structured prompt builder with real-time quality scoring and 
 - Productivity
 
 ## First Comment
-Hey Product Hunt! I built GRID because I kept seeing colleagues paste client names and emails into ChatGPT without thinking twice.
+Hey Product Hunt! I built DataMask because I kept seeing colleagues paste client names and emails into ChatGPT without thinking twice.
 
 The problem: 64% of professionals worry about data leaks to AI, but 50% keep pasting sensitive data anyway.
 
-GRID sits quietly in your browser and pseudonymizes personal data at the moment you paste. "M. Dupont" becomes "[Nom_1]", "jean@company.com" becomes "[Email_1]".
+DataMask sits quietly in your browser and pseudonymizes personal data at the moment you paste. "M. Dupont" becomes "[Nom_1]", "jean@company.com" becomes "[Email_1]".
 
 Key design decisions:
 - 100% client-side — your data never touches a server

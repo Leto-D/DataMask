@@ -1,12 +1,12 @@
 # Chrome Web Store — Fiche produit
-## GRID – AI Privacy & Prompt Builder v2.1.1
+## DataMask – AI Data Privacy v2.1.1
 
 ---
 
 # FRANCAIS
 
 ### Titre (45 caracteres max)
-GRID – AI Privacy & Prompt Builder
+DataMask – AI Data Privacy
 
 ### Resume (132 caracteres max)
 Pseudonymisez vos donnees sensibles avant de les envoyer a ChatGPT, Claude ou Gemini. 100% local, zero serveur. RGPD by design.
@@ -15,14 +15,14 @@ Pseudonymisez vos donnees sensibles avant de les envoyer a ChatGPT, Claude ou Ge
 
 Vos donnees ne quittent jamais votre navigateur. Point.
 
-Des extensions Chrome ont espionne 8 millions de conversations IA en 2025. GRID fait exactement l'inverse : zero serveur, zero collecte, zero compte a creer.
+Des extensions Chrome ont espionne 8 millions de conversations IA en 2025. DataMask fait exactement l'inverse : zero serveur, zero collecte, zero compte a creer.
 
 COMMENT CA MARCHE
 
 1. Vous collez un texte contenant des donnees sensibles dans ChatGPT, Claude ou Gemini
-2. GRID detecte et pseudonymise automatiquement avant l'envoi — "Jean Dupont" devient [Nom_1], "jean.dupont@email.com" devient [Email_1]
+2. DataMask detecte et pseudonymise automatiquement avant l'envoi — "Jean Dupont" devient [Nom_1], "jean.dupont@email.com" devient [Email_1]
 3. L'IA repond avec les pseudonymes
-4. GRID vous montre la table de correspondance pour retrouver les originaux
+4. DataMask vous montre la table de correspondance pour retrouver les originaux
 
 CE QUI EST PROTEGE
 
@@ -42,7 +42,7 @@ ChatGPT, Claude, Gemini, DeepSeek, Copilot, Perplexity + sites personnalises
 
 100% LOCAL — CE QUE CA SIGNIFIE CONCRETEMENT
 
-- Aucun serveur GRID ne recoit vos donnees
+- Aucun serveur DataMask ne recoit vos donnees
 - Aucun compte a creer, aucune inscription
 - Tout le traitement se fait dans votre navigateur
 - Journal de conformite RGPD chiffre localement (AES-256-GCM)
@@ -70,14 +70,14 @@ PERMISSIONS UTILISEES
 
 OPEN SOURCE & GRATUIT
 
-GRID est gratuit. Votre vie privee n'est pas un produit.
+DataMask est gratuit. Votre vie privee n'est pas un produit.
 
 ---
 
 # ENGLISH
 
 ### Title (45 characters max)
-GRID – AI Privacy & Prompt Builder
+DataMask – AI Data Privacy
 
 ### Summary (132 characters max)
 Pseudonymize sensitive data before sending to ChatGPT, Claude or Gemini. 100% local, zero servers. GDPR by design.
@@ -86,14 +86,14 @@ Pseudonymize sensitive data before sending to ChatGPT, Claude or Gemini. 100% lo
 
 Your data never leaves your browser. Period.
 
-Chrome extensions spied on 8 million AI conversations in 2025. GRID does the exact opposite: zero servers, zero data collection, zero account required.
+Chrome extensions spied on 8 million AI conversations in 2025. DataMask does the exact opposite: zero servers, zero data collection, zero account required.
 
 HOW IT WORKS
 
 1. Paste text containing sensitive data into ChatGPT, Claude or Gemini
-2. GRID detects and pseudonymizes automatically before sending — "John Smith" becomes [Name_1], "john.smith@email.com" becomes [Email_1]
+2. DataMask detects and pseudonymizes automatically before sending — "John Smith" becomes [Name_1], "john.smith@email.com" becomes [Email_1]
 3. The AI responds using pseudonyms
-4. GRID shows you the mapping table to retrieve the originals
+4. DataMask shows you the mapping table to retrieve the originals
 
 WHAT IS PROTECTED
 
@@ -113,7 +113,7 @@ ChatGPT, Claude, Gemini, DeepSeek, Copilot, Perplexity + custom sites
 
 100% LOCAL — WHAT THIS ACTUALLY MEANS
 
-- No GRID server ever receives your data
+- No DataMask server ever receives your data
 - No account to create, no sign-up
 - All processing happens in your browser only
 - Local encrypted GDPR compliance log (AES-256-GCM)
@@ -141,14 +141,14 @@ PERMISSIONS USED
 
 OPEN SOURCE & FREE
 
-GRID is free. Your privacy is not a product.
+DataMask is free. Your privacy is not a product.
 
 ---
 
 # DEUTSCH
 
 ### Titel (45 Zeichen max)
-GRID – AI Privacy & Prompt Builder
+DataMask – AI Data Privacy
 
 ### Zusammenfassung (132 Zeichen max)
 Pseudonymisieren Sie sensible Daten vor dem Senden an ChatGPT, Claude oder Gemini. 100% lokal, kein Server. DSGVO by Design.
@@ -157,14 +157,14 @@ Pseudonymisieren Sie sensible Daten vor dem Senden an ChatGPT, Claude oder Gemin
 
 Ihre Daten verlassen niemals Ihren Browser. Punkt.
 
-Chrome-Erweiterungen haben 2025 acht Millionen KI-Gespraeche ausspioniert. GRID macht genau das Gegenteil: kein Server, keine Datenerfassung, kein Konto erforderlich.
+Chrome-Erweiterungen haben 2025 acht Millionen KI-Gespraeche ausspioniert. DataMask macht genau das Gegenteil: kein Server, keine Datenerfassung, kein Konto erforderlich.
 
 SO FUNKTIONIERT ES
 
 1. Fuegen Sie Text mit sensiblen Daten in ChatGPT, Claude oder Gemini ein
-2. GRID erkennt und pseudonymisiert automatisch vor dem Senden — "Max Mueller" wird zu [Name_1], "max.mueller@email.de" wird zu [Email_1]
+2. DataMask erkennt und pseudonymisiert automatisch vor dem Senden — "Max Mueller" wird zu [Name_1], "max.mueller@email.de" wird zu [Email_1]
 3. Die KI antwortet mit Pseudonymen
-4. GRID zeigt Ihnen die Zuordnungstabelle, um die Originale abzurufen
+4. DataMask zeigt Ihnen die Zuordnungstabelle, um die Originale abzurufen
 
 WAS GESCHUETZT WIRD
 
@@ -184,7 +184,7 @@ ChatGPT, Claude, Gemini, DeepSeek, Copilot, Perplexity + benutzerdefinierte Seit
 
 100% LOKAL — WAS DAS KONKRET BEDEUTET
 
-- Kein GRID-Server empfaengt jemals Ihre Daten
+- Kein DataMask-Server empfaengt jemals Ihre Daten
 - Kein Konto erforderlich, keine Registrierung
 - Die gesamte Verarbeitung findet nur in Ihrem Browser statt
 - Lokal verschluesseltes DSGVO-Konformitaetsprotokoll (AES-256-GCM)
@@ -212,7 +212,7 @@ VERWENDETE BERECHTIGUNGEN
 
 OPEN SOURCE & KOSTENLOS
 
-GRID ist kostenlos. Ihre Privatsphaere ist kein Produkt.
+DataMask ist kostenlos. Ihre Privatsphaere ist kein Produkt.
 
 ---
 
