@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataMask – Créateur de Prompt</title>
+    <style>
+        /* === FONT FACES === */
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400 600;
+            font-display: swap;
+            src: url('../fonts/inter-latin-ext.woff2') format('woff2');
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400 600;
+            font-display: swap;
+            src: url('../fonts/inter-latin.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        @font-face {
+            font-family: 'JetBrains Mono';
+            font-style: normal;
+            font-weight: 400 600;
+            font-display: swap;
+            src: url('../fonts/jetbrains-mono-latin-ext.woff2') format('woff2');
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        @font-face {
+            font-family: 'JetBrains Mono';
+            font-style: normal;
+            font-weight: 400 600;
+            font-display: swap;
+            src: url('../fonts/jetbrains-mono-latin.woff2') format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        /* === DESIGN TOKENS — AMBER MONO LIGHT (synced with popup) === */
+        :root {
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+            /* Backgrounds — warm paper tones */
+            --bg-primary: #FAFAF7;
+            --bg-secondary: #F4F2EC;
+            --bg-tertiary: #EDE9E0;
+            --bg-elevated: #FAFAF7;
+
+            /* Borders — warm beige */
+            --border-light: #E2DDD5;
+            --border-medium: #CEC9BF;
+            --border-heavy: #9CA3AF;
+
+            /* Text */
+            --text-primary: #111827;
+            --text-secondary: #374151;
+            --text-muted: #8B7D6B;
+            --text-disabled: #9CA3AF;
+
+            /* Amber — brand color */
+            --amber-50: #FFFBEB;
+            --amber-100: #FEF3C7;
+            --amber-200: #FDE68A;
+            --amber-500: #F59E0B;
+            --amber-600: #D97706;
+            --amber-700: #B45309;
+            --amber-900: #78350F;
+
+            /* Slate — terminal / data accents */
+            --slate-100: #F1F5F9;
+            --slate-200: #E2E8F0;
+            --slate-400: #94A3B8;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-900: #0F172A;
+
+            /* Semantic status */
+            --status-success: #059669;
+            --status-warning: #D97706;
+            --status-error: #DC2626;
+            --status-info: #2563EB;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #18181B;
+            --bg-secondary: #1F1F23;
+            --bg-tertiary: #2A2A30;
+            --bg-elevated: #232328;
+
+            --border-light: #2E2E35;
+            --border-medium: #3A3A42;
+            --border-heavy: #52525B;
+
+            --text-primary: #FAFAFA;
+            --text-secondary: #A1A1AA;
+            --text-muted: #71717A;
+            --text-disabled: #52525B;
+
+            --amber-600: #F59E0B;
+            --amber-100: rgba(245, 158, 11, 0.15);
+
+            --slate-700: #A1A1AA;
+            --slate-100: #1F1F23;
+        }
+
+        /* === DARK MODE DOT GRID TEXTURE === */
+        [data-theme="dark"] body {
+            background-image: radial-gradient(circle, rgba(217, 119, 6, 0.06) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* === DARK MODE GLOW ON KEY NUMBERS === */
+        [data-theme="dark"] .panel-score,
+        [data-theme="dark"] .score-num {
+            text-shadow: 0 0 12px rgba(217, 119, 6, 0.55);
+        }
+
+        /* === BASE === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 13px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* === GLOBAL CARET === */
+        input, textarea, select {
+            caret-color: var(--amber-600);
+        }
+
+        .panel-app {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* === HEADER (48px) === */
+        .panel-header {
+            height: 48px;
+            min-height: 48px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .panel-header-title {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.18em;
+        }
+
+        .panel-header-center {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .panel-score {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--amber-600);
+        }
+
+        .panel-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-generate {
+            background: var(--amber-600);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            padding: 0 12px;
+            height: 32px;
+            font: 600 12px var(--font-sans);
+            cursor: pointer;
+            transition: background 150ms ease-out;
+        }
+
+        .btn-generate:hover {
+            background: var(--amber-700);
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background 150ms ease-out;
+            font-size: 18px;
+        }
+
+        .btn-close:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* === MAIN CONTENT === */
+        .panel-content {
+            flex: 1;
+            padding: 16px;
+            padding-bottom: 140px;
+            /* space for sticky preview */
+        }
+
+        /* === SCORE CARD === */
+        .score-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .score-ring-wrap {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        .score-num {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font: 700 13px var(--font-mono);
+        }
+
+        .score-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .score-title {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .score-words {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .score-tip {
+            font-size: 10px;
+            color: var(--amber-600);
+            font-weight: 500;
+        }
+
+        /* === PASTE PROTECT PANEL === */
+        .paste-protect-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .paste-protect-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .paste-protect-label input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--status-success);
+            cursor: pointer;
+        }
+
+        .paste-protect-icon {
+            color: var(--status-success);
+            flex-shrink: 0;
+        }
+
+        .shield-banner {
+            background: #065f46;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .shield-banner.error {
+            background: #991b1b;
+        }
+
+        .shield-banner.warning {
+            background: #92400e;
+        }
+
+        .paste-protect-panel {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .paste-protect-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .paste-protect-panel-title {
+            font-family: var(--font-sans);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .paste-protect-panel-count {
+            background: var(--status-success);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .paste-protect-panel-toggle {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            color: var(--text-muted);
+            transition: transform 150ms ease-out;
+        }
+
+        .paste-protect-panel-toggle[aria-expanded="true"] .chevron {
+            transform: rotate(90deg);
+        }
+
+        .paste-protect-panel-body {
+            padding: 0 12px 10px;
+        }
+
+        .pp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .pp-table th {
+            text-align: left;
+            padding: 4px 6px;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .pp-table td {
+            padding: 4px 6px;
+            color: var(--text-primary);
+        }
+
+        .pp-table tr:nth-child(even) {
+            background: var(--bg-secondary);
+        }
+
+        .pp-badge-art9 {
+            background: var(--amber-200);
+            color: var(--amber-900);
+            font-size: 9px;
+            font-weight: 600;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .pp-badge-art4 {
+            background: #D1FAE5;
+            color: #065F46;
+            font-size: 9px;
+            font-weight: 600;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .pp-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 6px;
+        }
+
+        .pp-btn {
+            background: none;
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 10px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 150ms ease-out;
+        }
+
+        .pp-btn:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        /* === ACCORDION === */
+        .acc {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .acc-head {
+            width: 100%;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-sans);
+            transition: background 150ms ease-out;
+        }
+
+        .acc-head:hover {
+            background: var(--bg-secondary);
+        }
+
+        .acc-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .acc-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-badge {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            border: 1px solid var(--border-medium);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-badge.complete {
+            background: var(--amber-600);
+            color: #FFFFFF;
+            border-color: var(--amber-600);
+        }
+
+        .section-status {
+            font-size: 13px;
+        }
+
+        .section-status.complete {
+            color: var(--status-success);
+        }
+
+        .section-status.partial {
+            color: var(--amber-600);
+        }
+
+        .chevron {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-muted);
+            transition: transform 150ms ease-out;
+            flex-shrink: 0;
+        }
+
+        .acc-head[aria-expanded="true"] .chevron {
+            transform: rotate(90deg);
+        }
+
+        .acc-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 16px;
+        }
+
+        .acc-body.open {
+            max-height: 2000px;
+            padding: 4px 16px 16px;
+            border-top: none;
+        }
+
+        /* Active accordion section — left border accent */
+        .acc.active {
+            border-left: 2px solid var(--amber-600);
+        }
+
+        /* === FORM ELEMENTS === */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            font: 400 13px var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 150ms ease-out;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--amber-600);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-disabled);
+        }
+
+        /* Prompt textarea — monospace */
+        .prompt-input {
+            font: 400 13px var(--font-mono);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            padding: 10px;
+            resize: vertical;
+            background: var(--bg-primary);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .prompt-input:focus {
+            outline: none;
+            border-color: var(--amber-600);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+        }
+
+        select.form-input {
+            cursor: pointer;
+        }
+
+        /* Validation */
+        .form-input.valid,
+        .form-textarea.valid {
+            border-color: var(--status-success);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .form-input.error,
+        .form-textarea.error {
+            border-color: var(--status-error);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        /* Suggestions */
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .suggestion-tag {
+            background: var(--amber-100);
+            color: var(--amber-700);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font: 500 11px var(--font-sans);
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background 150ms ease-out, border-color 150ms ease-out;
+        }
+
+        .suggestion-tag:hover {
+            background: var(--amber-200);
+        }
+
+        [data-theme="dark"] .suggestion-tag {
+            background: rgba(217, 119, 6, 0.12);
+            color: #F59E0B;
+            border-color: rgba(217, 119, 6, 0.35);
+        }
+
+        [data-theme="dark"] .suggestion-tag:hover {
+            background: rgba(217, 119, 6, 0.22);
+            border-color: rgba(217, 119, 6, 0.5);
+        }
+
+        .text-sm {
+            font-size: 11px;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* === LIVE PREVIEW — STICKY BOTTOM === */
+        .live-preview {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--slate-900);
+            border-top: 1px solid var(--slate-600);
+            z-index: 50;
+            max-height: 120px;
+            transition: max-height 150ms ease-out;
+        }
+
+        .live-preview.collapsed {
+            max-height: 32px;
+        }
+
+        .live-preview-toggle {
+            color: var(--amber-500);
+            font: 500 12px var(--font-sans);
+            cursor: pointer;
+            padding: 8px 16px;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-preview-copy {
+            background: var(--amber-600);
+            color: #FFFFFF;
+            border: none;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font: 500 11px var(--font-sans);
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .live-preview-content {
+            padding: 0 16px 8px;
+        }
+
+        .live-preview-content.hidden {
+            display: none;
+        }
+
+        .live-preview pre {
+            background: transparent;
+            border: none;
+            color: var(--slate-400);
+            font: 400 11px var(--font-mono);
+            max-height: 70px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="panel-app">
+
+        <!-- HEADER -->
+        <div class="panel-header">
+            <span class="panel-header-title">DATAMASK</span>
+            <div class="panel-header-center">
+                <span class="panel-score" id="panel-score">—</span>
+            </div>
+            <div class="panel-header-actions">
+                <button class="btn-generate" data-action="generate-prompt" data-i18n="btn_generate">Générer</button>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="panel-content">
+
+            <!-- Score card -->
+            <div id="score-card" class="score-card hidden"></div>
+
+            <!-- PasteProtect toggle + banner -->
+            <div class="paste-protect-row">
+                <label class="paste-protect-label">
+                    <input type="checkbox" id="paste-protect-toggle" checked>
+                    <svg class="paste-protect-icon" viewBox="0 0 24 24" width="14" height="14">
+                        <path fill="currentColor"
+                            d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                    </svg>
+                    <span data-i18n="paste_protect_label">PasteProtect</span>
+                </label>
+            </div>
+            <div id="paste-protect-banner" class="shield-banner hidden"></div>
+
+            <!-- PasteProtect correspondence table -->
+            <div id="paste-protect-panel" class="paste-protect-panel hidden">
+                <div class="paste-protect-panel-header">
+                    <span class="paste-protect-panel-title" data-i18n="pp_correspondences">Correspondances</span>
+                    <span class="paste-protect-panel-count" id="pp-count">0</span>
+                    <button class="paste-protect-panel-toggle" id="pp-panel-toggle" aria-expanded="false">
+                        <svg class="chevron" viewBox="0 0 24 24" width="14" height="14">
+                            <path fill="currentColor" d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="paste-protect-panel-body hidden" id="pp-panel-body">
+                    <table class="pp-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="pp_pseudonym">Pseudonyme</th>
+                                <th data-i18n="pp_category">Catégorie</th>
+                                <th data-i18n="pp_rgpd">RGPD</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pp-table-body"></tbody>
+                    </table>
+                    <div class="pp-actions">
+                        <button class="pp-btn" id="pp-reset" data-i18n="pp_reset">Réinitialiser</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: Identité et Rôle -->
+            <div class="acc active" data-section="identity">
+                <button class="acc-head" aria-expanded="true" data-toggle="identity">
+                    <span class="acc-title">
+                        <span class="step-badge">1</span>
+                        <span data-i18n="section_identity">Identité et Rôle</span>
+                    </span>
+                    <span class="acc-right">
+                        <span class="section-status" id="identity-status"></span>
+                        <svg class="chevron" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                        </svg>
+                    </span>
+                </button>
+                <div class="acc-body open" id="identity-body">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="role_label">Rôle et personnalité</label>
+                        <select id="role" class="form-input">
+                            <option value="" data-i18n="role_placeholder">Choisir un rôle...</option>
+                            <option value="consultant-senior" data-i18n-option="roles.senior_consultant">Consultant
+                                Senior en Stratégie</option>
+                            <option value="analyste-donnees" data-i18n-option="roles.data_analyst">Analyste de Données
+                            </option>
+                            <option value="expert-marketing" data-i18n-option="roles.marketing_expert">Expert Marketing
+                            </option>
+                            <option value="developpeur-senior" data-i18n-option="roles.senior_developer">Développeur
+                                Senior</option>
+                            <option value="redacteur-technique" data-i18n-option="roles.technical_writer">Rédacteur
+                                Technique</option>
+                            <option value="personnalise" data-i18n-option="roles.custom">Rôle personnalisé...</option>
+                        </select>
+                        <input id="role-custom" class="form-input hidden"
+                            data-i18n-placeholder="role_custom_placeholder"
+                            placeholder="Décrivez le rôle personnalisé..." style="margin-top: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="skills_label">Compétences clés</label>
+                        <input id="competences" class="form-input" data-i18n-placeholder="skills_placeholder"
+                            placeholder="Ex: Analyse stratégique, Optimisation, Leadership...">
+                        <div class="suggestions">
+                            <span class="suggestion-tag" data-suggestion="competence">Analyse stratégique</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Pensée critique</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Communication</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Créativité</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Leadership</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Innovation</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Résolution de problèmes</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Gestion de projet</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Analyse de données</span>
+                            <span class="suggestion-tag" data-suggestion="competence">Vision business</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="tone_label">Ton et personnalité</label>
+                        <select id="tone" class="form-input">
+                            <option value="" data-i18n-option="tone_default">Par défaut</option>
+                            <option value="professional" data-i18n-option="tone_professional">Professionnel</option>
+                            <option value="friendly" data-i18n-option="tone_friendly">Amical</option>
+                            <option value="academic" data-i18n-option="tone_academic">Académique</option>
+                            <option value="direct" data-i18n-option="tone_direct">Direct</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Tâche et Objectif -->
+            <div class="acc" data-section="task">
+                <button class="acc-head" aria-expanded="false" data-toggle="task">
+                    <span class="acc-title">
+                        <span class="step-badge">2</span>
+                        <span data-i18n="section_task">Tâche et Objectif</span>
+                    </span>
+                    <span class="acc-right">
+                        <span class="section-status" id="task-status"></span>
+                        <svg class="chevron" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                        </svg>
+                    </span>
+                </button>
+                <div class="acc-body" id="task-body">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="objective_label">Objectif principal</label>
+                        <textarea id="objective" class="prompt-input form-textarea"
+                            data-i18n-placeholder="objective_placeholder"
+                            placeholder="Décrivez précisément ce que vous attendez de l'IA..."></textarea>
+                        <div class="suggestions">
+                            <span class="suggestion-tag" data-suggestion="objectif">Rédiger un rapport</span>
+                            <span class="suggestion-tag" data-suggestion="objectif">Analyser des données</span>
+                            <span class="suggestion-tag" data-suggestion="objectif">Créer une stratégie</span>
+                            <span class="suggestion-tag" data-suggestion="objectif">Résoudre un problème</span>
+                            <span class="suggestion-tag" data-suggestion="objectif">Optimiser un processus</span>
+                            <span class="suggestion-tag" data-suggestion="objectif">Évaluer des options</span>
+                            <span class="suggestion-tag" data-suggestion="objectif">Planifier un projet</span>
+                            <span class="suggestion-tag" data-suggestion="objectif">Présenter des résultats</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="instructions_label">Instructions séquentielles
+                            (optionnel)</label>
+                        <textarea id="instructions" class="prompt-input form-textarea"
+                            data-i18n-placeholder="instructions_placeholder"
+                            placeholder="1. Effectuer une analyse...&#10;2. Proposer des stratégies...&#10;3. Identifier les KPIs..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="examples_label">Exemples Input/Output (multishot)</label>
+                        <textarea id="exemples" class="prompt-input form-textarea" style="min-height: 100px;"
+                            data-i18n-placeholder="examples_placeholder"
+                            placeholder="Exemple 1:&#10;Input: [votre exemple]&#10;Output: [réponse attendue]"></textarea>
+                        <p class="text-sm text-muted" style="margin-top: 4px;" data-i18n="examples_help">Fournissez 2-5
+                            exemples avec format Input → Output</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Contexte -->
+            <div class="acc" data-section="context">
+                <button class="acc-head" aria-expanded="false" data-toggle="context">
+                    <span class="acc-title">
+                        <span class="step-badge">3</span>
+                        <span data-i18n="section_context">Contexte</span>
+                    </span>
+                    <span class="acc-right">
+                        <span class="section-status" id="context-status"></span>
+                        <svg class="chevron" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                        </svg>
+                    </span>
+                </button>
+                <div class="acc-body" id="context-body">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="context_label">Contexte / Situation</label>
+                        <textarea id="context" class="prompt-input form-textarea"
+                            data-i18n-placeholder="context_placeholder"
+                            placeholder="Ex: Entreprise: LeadGenPro, Secteur: Logiciels B2B, Public: investisseurs..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="audience_label">Audience cible</label>
+                        <select id="audience" class="form-input" multiple>
+                            <option value="debutant" data-i18n-option="audiences.beginner">Débutant</option>
+                            <option value="intermediaire" data-i18n-option="audiences.intermediate">Intermédiaire
+                            </option>
+                            <option value="expert" data-i18n-option="audiences.expert">Expert</option>
+                            <option value="equipe-direction" data-i18n-option="audiences.management">Équipe de direction
+                            </option>
+                            <option value="grand-public" data-i18n-option="audiences.general_public">Grand public
+                            </option>
+                            <option value="technique" data-i18n-option="audiences.technical">Public technique</option>
+                        </select>
+                        <p class="text-sm text-muted" style="margin-top: 4px;" data-i18n="audience_help">Maintenez
+                            Ctrl/Cmd pour sélectionner plusieurs options</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="data_label">Données pertinentes</label>
+                        <textarea id="user-data" class="prompt-input form-textarea"
+                            data-i18n-placeholder="data_placeholder"
+                            placeholder="Collez ici les données, chiffres ou informations utiles..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Contraintes -->
+            <div class="acc" data-section="constraints">
+                <button class="acc-head" aria-expanded="false" data-toggle="constraints">
+                    <span class="acc-title">
+                        <span class="step-badge">4</span>
+                        <span data-i18n="section_constraints">Contraintes</span>
+                    </span>
+                    <span class="acc-right">
+                        <span class="section-status" id="constraints-status"></span>
+                        <svg class="chevron" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                        </svg>
+                    </span>
+                </button>
+                <div class="acc-body" id="constraints-body">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="constraints_label">Contraintes (formulées
+                            positivement)</label>
+                        <textarea id="constraints" class="prompt-input form-textarea"
+                            data-i18n-placeholder="constraints_placeholder"
+                            placeholder="Ex: Utiliser uniquement des sources vérifiables, Répondre en moins de 500 mots..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="uncertainty_label">Gestion de l'incertitude</label>
+                        <select id="uncertainty" class="form-input">
+                            <option value="" data-i18n-option="uncertainty_none">Aucune consigne</option>
+                            <option value="say-unsure" data-i18n-option="uncertainty_say_so">Dire "je ne suis pas sûr"
+                            </option>
+                            <option value="ask-question" data-i18n-option="uncertainty_ask">Poser une question</option>
+                            <option value="show-confidence" data-i18n-option="uncertainty_confidence">Indiquer le niveau
+                                de confiance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="success_criteria_label">Critères de succès</label>
+                        <textarea id="criteres" class="prompt-input form-textarea"
+                            data-i18n-placeholder="success_criteria_placeholder"
+                            placeholder="Ex: Réponse complète, cohérente, utilisable, avec 3-5 points par section..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                            <input type="checkbox" id="require-sources" style="accent-color: var(--amber-600);"> <span
+                                data-i18n="require_sources">Exiger des sources</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Format de sortie -->
+            <div class="acc" data-section="output">
+                <button class="acc-head" aria-expanded="false" data-toggle="output">
+                    <span class="acc-title">
+                        <span class="step-badge">5</span>
+                        <span data-i18n="section_output">Format de sortie</span>
+                    </span>
+                    <span class="acc-right">
+                        <span class="section-status" id="output-status"></span>
+                        <svg class="chevron" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                        </svg>
+                    </span>
+                </button>
+                <div class="acc-body" id="output-body">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="output_format_label">Format</label>
+                        <select id="format" class="form-input">
+                            <option value="texte" data-i18n-option="formats.text">Texte libre</option>
+                            <option value="rapport" selected data-i18n-option="formats.report">Rapport structuré
+                            </option>
+                            <option value="liste" data-i18n-option="formats.list">Liste à puces</option>
+                            <option value="json" data-i18n-option="formats.json">Format JSON</option>
+                            <option value="tableau" data-i18n-option="formats.table">Tableau</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="response_length_label">Longueur</label>
+                        <select id="longueur" class="form-input">
+                            <option value="courte" data-i18n-option="lengths.short">Courte (100-300 mots)</option>
+                            <option value="moyenne" selected data-i18n-option="lengths.medium">Moyenne (300-600 mots)
+                            </option>
+                            <option value="detaillee" data-i18n-option="lengths.detailed">Détaillée (600+ mots)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="prefill_label">Préremplissage (optionnel)</label>
+                        <input id="prefill" class="form-input" data-i18n-placeholder="prefill_placeholder"
+                            placeholder='Ex: {"Strengths": [, "Weaknesses": ['>
+                        <p class="text-sm text-muted" style="margin-top: 4px;" data-i18n="prefill_help">Format de sortie
+                            que l'IA doit commencer à remplir</p>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                            <input type="checkbox" id="use-xml" style="accent-color: var(--amber-600);"> <span
+                                data-i18n="use_xml">Utiliser structure XML avancée</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Paramètres IA -->
+            <div class="acc" data-section="parameters">
+                <button class="acc-head" aria-expanded="false" data-toggle="parameters">
+                    <span class="acc-title">
+                        <span class="step-badge" style="font-size: 13px;">⚙</span>
+                        <span data-i18n="section_parameters">Paramètres IA</span>
+                    </span>
+                    <span class="acc-right">
+                        <span class="section-status" id="parameters-status"></span>
+                        <svg class="chevron" viewBox="0 0 24 24">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                        </svg>
+                    </span>
+                </button>
+                <div class="acc-body" id="parameters-body">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="creativity_level_label">Créativité</label>
+                        <select id="creativite" class="form-input">
+                            <option value="factuelle" data-i18n-option="creativity.factual">Factuelle (0% créativité)
+                            </option>
+                            <option value="moderee" selected data-i18n-option="creativity.moderate">Modérée (30%
+                                créativité)</option>
+                            <option value="creative" data-i18n-option="creativity.creative">Créative (70% créativité)
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="reasoning_label">Raisonnement</label>
+                        <select id="reasoning" class="form-input">
+                            <option value="none" data-i18n-option="reasoning_types.none">Aucun raisonnement spécifique
+                            </option>
+                            <option value="step-by-step" data-i18n-option="reasoning_types.step_by_step">Raisonnement
+                                étape par étape</option>
+                            <option value="justification" data-i18n-option="reasoning_types.justification">Justifier les
+                                choix</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="autonomy_label">Autonomie</label>
+                        <select id="eagerness" class="form-input">
+                            <option value="low" data-i18n-option="autonomy_levels.low">Basse - L'IA pose des questions
+                            </option>
+                            <option value="medium" selected data-i18n-option="autonomy_levels.medium">Moyenne -
+                                Équilibrée</option>
+                            <option value="high" data-i18n-option="autonomy_levels.high">Haute - L'IA est proactive
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="analysis_depth_label">Profondeur</label>
+                        <select id="reasoning-effort" class="form-input">
+                            <option value="low" data-i18n-option="analysis_depths.low">Analyse superficielle</option>
+                            <option value="medium" selected data-i18n-option="analysis_depths.medium">Analyse standard
+                            </option>
+                            <option value="high" data-i18n-option="analysis_depths.high">Analyse approfondie</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="verbosity_label">Verbosité</label>
+                        <select id="verbosity" class="form-input">
+                            <option value="concise" data-i18n-option="verbosity_levels.concise">Concise</option>
+                            <option value="balanced" selected data-i18n-option="verbosity_levels.balanced">Équilibrée
+                            </option>
+                            <option value="detailed" data-i18n-option="verbosity_levels.detailed">Détaillée</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer;">
+                            <input type="checkbox" id="allow-unknown" style="accent-color: var(--amber-600);"> <span
+                                data-i18n="allow_unknown">Autoriser "Je ne sais pas"</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- LIVE PREVIEW — STICKY BOTTOM -->
+        <div class="live-preview" id="live-preview">
+            <div class="live-preview-toggle" id="live-preview-toggle">
+                <svg class="chevron" viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--amber-500);">
+                    <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+                </svg>
+                <span data-i18n="live_preview_title">Aperçu temps réel</span>
+                <button class="live-preview-copy" id="live-preview-copy-btn" data-i18n="copy_button">Copier</button>
+            </div>
+            <div class="live-preview-content" id="live-preview-content">
+                <pre id="live-prompt-preview"></pre>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module" src="./panel.js"></script>
+</body>
+
+</html>

@@ -30,6 +30,16 @@ Thumbs.db
 create-icons.html
 manifest-simple.json
 
+# Build archives
+*.zip
+
 # Logs
 logs
 *.log
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Audit interne
+AUDIT_GRID_v2.md
