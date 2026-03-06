@@ -88,6 +88,7 @@ export const PATTERNS_IDENTITY = [
     confidence: 'high',
     regex: /\b[12][ \t]?\d{2}[ \t]?\d{2}[ \t]?\d{2}[ \t]?\d{3}[ \t]?\d{3}[ \t]?\d{2}\b/g,
     validator: validateSecuFR,
+    softValidation: true,
     pseudonymPrefix: 'Secu',
     enabled: true
   },

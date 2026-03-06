@@ -43,3 +43,7 @@ CLAUDE.md
 
 # Audit interne
 AUDIT_GRID_v2.md
+
+# Tests (locaux uniquement)
+tests/
+vitest.config.ts
